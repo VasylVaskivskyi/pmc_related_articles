@@ -1,11 +1,14 @@
-//available 
+/////////////////////////////////////////////////////////////////////////////////
+//////////////////ADDITIONAL INFO START
+//////////////////////////////////////////////////////////////////////////////
+//available annotaions for accession number from the following databases:
 //"pdb", "arrayexpress", "bioproject", "hpa", "omim", 
 //"gen", "uniprot", "nct",  "refsnp",  "refseq",  "gca", "go",  "interpro", "pfam",
 // "pxd", "ensembl", "igsr", "reactome", "ega", "biosample", "emma", 
 //"metabolights", "biomodels", "hgnc"
 
 
-//unavailable
+//unavailable annotaions for accession number from the following databases:
 //"rrid", "eva", "doi","chembl", "eudract",
 
 //sample query
@@ -19,20 +22,29 @@
 //:POST /db/data/transaction/commit
 //  {"statements":[{"statement":"MATCH pp = (p:Paper{id:'30427217'})<-[a_r:ACCESSION]-(acs:Accession)<-[r_r:RELATED_TO]-(r_p:Related_paper) RETURN pp",
 //                  "resultDataContents":["graph"]}]}
-////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//////////////////ADDITIONAL INFO END
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+/////WARNING BEFORE RUNNING IN NEO4J BROWSER ACTIVATE OPTION "Enable multi statement query editor"
 
 
 ///////////////////////////////////////////
-////////////////MAIN START
+////////////////GETTING PAPER INFO START
 /////////////////////////////////////////// 100 papers 2min, 500 p 11 min
-//
+
 
 CALL apoc.load.json("https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(ACCESSION_TYPE%3A*)&resultType=lite&cursorMark=*&pageSize=500&format=json")
 YIELD value AS all_papers
 UNWIND all_papers.resultList.result AS results_all_papers
 MERGE (paper:Paper{title:COALESCE(results_all_papers.title,"NOT SET"), source:COALESCE(results_all_papers.source,"NOT SET"), id:COALESCE(results_all_papers.id,"NOT SET") } )
 
-WITH paper 
+WITH paper
 
 
 
@@ -66,17 +78,16 @@ RETURN "main finished";
 
 
 ///////////////////////////////////////////
-////////////////MAIN END
+////////////////GETTING PAPER INFO MAIN END
 ///////////////////////////////////////////
 
 
 
-////////////////////////////////////////
-///////////ANNOTATIONS START
-///////////////////////////////////////
+///////////////////////////////////////////////////////////
+///////////GETTING ANNOTATIONS FOR ACCESSION NUMBERS START
+/////////////////////////////////////////////////////////
 
 ////////////////////////////////PDB +
-WITH NULL AS a_pdb
 
 OPTIONAL MATCH(acs:Accession)
 WHERE acs.db="pdb"
@@ -514,6 +525,6 @@ YIELD value
 SET acs += value;
 
 
-///////////////////////////////////////////////
-//////////////ANNOTATIONS END
-/////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+//////////////GETTING ANNOTATIONS FOR ACCESSION NUMBERS END
+//////////////////////////////////////////////////////////
