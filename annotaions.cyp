@@ -421,7 +421,7 @@ CALL apoc.do.when(acs IS NOT NULL,
 	RETURN value',
 	"",{acs:acs})
 YIELD value AS hgnc_data
-WITH [ n in hgnc_data._children WHERE n._type = "result" | [ r in n._children[0]._children WHERE r.name="symbol"| r._text] ] AS hgnc 
+WITH acs, [ n in hgnc_data._children WHERE n._type = "result" | [ r in n._children[0]._children WHERE r.name="symbol"| r._text] ] AS hgnc 
 SET acs.symbol = hgnc;
 
 //////////////////////////////////////// biomodels + 
