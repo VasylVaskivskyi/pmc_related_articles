@@ -68,7 +68,7 @@ UNWIND rel_pap.resultList.result AS results
 MERGE (acs)<-[r_b:RELATED_TO]-(rel_p:Related_paper {title:COALESCE(results.title,"NOT SET"), source:COALESCE(results.source,"NOT SET"), id:COALESCE(results.id,"NOT SET")} )
 
 
-WITh acs, paper, rel_p
+WITH acs, paper, rel_p
 MATCH pp = (paper)<-[a_r:ACCESSION]-(acs:Accession)<-[r_r:RELATED_TO]-(rel_p)
 WHERE p.id = rel_p.id
 DETACH DELETE rel_p
