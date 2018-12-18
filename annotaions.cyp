@@ -70,7 +70,7 @@ MERGE (acs)<-[r_b:RELATED_TO]-(rel_p:Related_paper {title:COALESCE(results.title
 
 WITH acs, paper, rel_p
 MATCH pp = (paper)<-[a_r:ACCESSION]-(acs)<-[r_r:RELATED_TO]-(rel_p)
-WHERE p.id = rel_p.id
+WHERE paper.id = rel_p.id
 DETACH DELETE rel_p
 
 
