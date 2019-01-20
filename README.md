@@ -1,9 +1,9 @@
 # pmc_related_articles
 
-Python dependencies
- -pandas
- -requests
- -ftplib
+Python dependencies:
+-pandas
+-requests
+-ftplib
 
 How script works
 1. Download dump of accession numbers with associated paper indices from EuropePMC. ftp://ftp.ebi.ac.uk/pub/databases/pmc/TextMinedTerms/
