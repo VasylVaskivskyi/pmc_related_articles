@@ -1,0 +1,78 @@
+circle.Condition {
+	fill: #F1948A;
+	stroke: #EC7063;
+}
+
+circle.Condition:hover {
+	fill: #FADBD8;
+	stroke: #F1948A;
+}
+
+circle.Job {
+	fill: #82E0AA;
+	stroke: #58D68D;
+}
+
+circle.Job:hover {
+	fill: #ABEBC6;
+	stroke: #82E0AA;
+}
+
+circle.Cyclic.Job {
+	fill: #C39BD3;
+	stroke: #AF7AC5;
+}
+
+circle.Cyclic.Job:hover {
+	fill: #D7BDE2;
+	stroke: #C39BD3;
+}
+
+circle.Folder {
+	fill: #85C1E9;
+	stroke: #5DADE2;
+}
+
+circle.Folder:hover {
+	fill: #AED6F1;
+	stroke: #85C1E9;
+}
+
+path.OUT_SUB {
+	fill: #C0392B;
+	stroke: #C0392B;
+	stroke-width: 1.5px;
+	stroke-dasharray: 5,5;
+}
+
+path.IN_OR {
+	fill: #3498DB;
+	stroke: #3498DB;
+	stroke-width: 1.5px;
+	stroke-dasharray: 5,5;
+}
+
+path {
+	fill: #1B2631;
+	stroke: #1B2631;
+}
+
+#control-icon-group {
+	cursor: pointer;
+}
+
+g.lockIcon path {
+	stroke: #1B2631;
+	stroke-width: 1.5px;
+}
+
+g path.overlay {
+	fill: white;
+	stroke: #1B2631;
+	stroke-width: 1px;
+	stroke-dasharray: 2,2;
+}
+
+text {
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
