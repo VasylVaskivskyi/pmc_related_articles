@@ -35,7 +35,7 @@ dbms.security.auth_enabled=false (if you don't want to set up a password)
 Because of current limitatins of **admin-import tool** If you want to run script again, you have to delete the database "imp.db" or specify another name for it.
 
 **List of papers available in database**\
-*https://europepmc.org/search?query=ACCESSION_TYPE%3A\*
+*https://europepmc.org/search?query=ACCESSION_TYPE%3A*
 
 **Ready output database of process_and_import.py is available here**\
 *https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW*
