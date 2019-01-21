@@ -81,7 +81,6 @@
     var lineText;
 	
 	var current_id;
-	var current_article;
 	
     var itemColorMap = {};
     var colorScale = d3.scaleOrdinal(d3.schemeSet2);
@@ -157,7 +156,7 @@
         .append('path')
         .attr('d', 'M0,-5L10,0L0,5');
       */
-	  zoomGLayer.append('g').attr('id', 'path-group').attr('transform', 'translate(' + centerX + ',' + centerY + ')');
+      zoomGLayer.append('g').attr('id', 'path-group').attr('transform', 'translate(' + centerX + ',' + centerY + ')');
       zoomGLayer.append('g').attr('id', 'path-label-group').attr('transform', 'translate(' + centerX + ',' + centerY + ')');
       zoomGLayer.append('g').attr('id', 'circle-group').attr('transform', 'translate(' + centerX + ',' + centerY + ')');
       zoomGLayer.append('g').attr('id', 'text-group').attr('transform', 'translate(' + centerX + ',' + centerY + ')');
@@ -262,10 +261,11 @@
         .id(function(d) {return d.id;});
 
       d3Simulation = d3.forceSimulation()
-        .force('charge', d3.forceManyBody().strength(-200))
+        .force('charge', d3.forceManyBody().strength(-250))
         .force('collideForce', d3.forceCollide(collideForceSize).iterations(1))
-		.force("x", d3.forceX(graphWidth / 4))
-		.force("y", d3.forceY(graphHeight / 4))
+	.force('center', d3.forceCenter(100, 100))
+	//.force("x", d3.forceX(graphWidth / 4))
+	//.force("y", d3.forceY(graphHeight / 6))
         .nodes(mapToArray(nodeItemMap))
         .force('linkForce', d3LinkForce);
 
@@ -314,23 +314,7 @@
 
       lines.exit().remove();
       lines = lines.enter().append('path').merge(lines);
-	  
-
-	function current_article(d){
-	
-		if (current_id.substr(0,3) == "PMC" && d.properties.PMCID == current_id){
-			current_artlicle = d.properties
-			$('#currentArticle').append($('<p></p>').text(current_article))
-		}
-		else if (d.properties.PMID == current_id){
-			current_artlicle = d.properties
-			$('#currentArticle').append($('<p></p>').text(current_article))
-		}
-	}	
-		
-
-
-	
+	  	
 	/*
       lineText.exit().remove();
       lineText = lineText.enter().append('text')
