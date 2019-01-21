@@ -4,7 +4,7 @@ In this database you can explore relationships between articles that have common
 
 ![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/screenshot.JPG)
 
-For all of these to work you need Neo4j server.
+For all of these to work you need Neo4j server.\
 https://neo4j.com/download-center/#releases
 
 Python dependencies: 	
@@ -34,10 +34,10 @@ dbms.security.auth_enabled=false (if you don't want to set up a password)
 **Warning:**\
 Because of current limitatins of **admin-import tool** If you want to run script again, you have to delete the database "imp.db" or specify another name for it.
 
-**List of papers available in database**
+**List of papers available in database**\
 (https://europepmc.org/search?query=ACCESSION_TYPE%3A*)
 
-**Ready output database of process_and_import.py is available here**
+**Ready output database of process_and_import.py is available here**\
 https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW
 Just put it in NEO4J_home_folder/data/databases.
 
