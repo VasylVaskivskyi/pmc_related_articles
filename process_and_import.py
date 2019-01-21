@@ -8,6 +8,11 @@ from datetime import datetime
 import os
 from ftplib import FTP
 
+print(datetime.now().time(),"starting")
+start = datetime.now()
+
+
+
 pandas.options.mode.chained_assignment = None
 pandas.options.display.max_columns = 10
 pandas.options.display.width = None
@@ -28,9 +33,9 @@ def progress(i_val, nrows, name):
 			
 #################### Replace me values #########################
 
-neo4j_home_dir = "C:/neo4j-enterprise/bin/"
-path_to_databases = "C:/source/python_feeder/databases/"
-path_to_output_csv = "C:/source/python_feeder/neo/"
+neo4j_home_dir = "D:/Graphs/neo4j_server/bin/"
+path_to_databases = "D:/python/user_files/databases/"
+path_to_output_csv = "D:/python/user_files/neo/"
 
 
 
@@ -40,6 +45,10 @@ if not os.path.exists(path_to_databases):
 
 if not os.path.exists(path_to_output_csv):
     os.makedirs(path_to_output_csv)
+
+
+
+print(datetime.now().time(),"getting data tables")
 
 
 ftp = FTP("ftp.ebi.ac.uk")
@@ -79,8 +88,7 @@ for filename in os.listdir(path_to_databases):
 
 
 #################### Concatenating all tables to one #########################
-
-print("time start", datetime.now().time())
+print(datetime.now().time(), "processing tables")
 
 
 big_table = pandas.DataFrame(data=None, columns=["Term", "PMCID", "PMID", "Database"])
@@ -107,7 +115,9 @@ unique_acs["acs_index"] = unique_acs.index
 big_table["paper_index"] = big_table.index
 big_table["acs_index"] = big_table.index
 
+#################### Creating nodes#########################
 
+print(datetime.now().time(), "creating nodes and relationships")
 
 
 big_table_w_pid = big_table.merge(unique_ids, how = "inner", on = "PMCID", sort = True)
@@ -128,7 +138,7 @@ relationships.columns = [":START_ID(Paper-ID)", ":END_ID(Accession-ID)", ":TYPE"
 
 
 
-#################### Separating apaper nodes from accession nodes #########################
+#################### Separating paper nodes from accession nodes #########################
 
 
 paper_nodes = nodes[["p_ind:ID(Paper-ID)", "PMCID", "PMID"]]
@@ -146,7 +156,7 @@ acs_nodes[":LABEL"] = "Accession"
 
 
 #################### Getting a dataframe with titles #########################
-
+print(datetime.now().time(), "getting titles for papers")
 
 total_meta_table = pandas.DataFrame(data = None, columns = ["title","pmcid"])
 next_cursor = "*"
@@ -158,14 +168,14 @@ for i in range(0,500):
     current_cursor = result["request"]["cursorMark"]
     next_cursor = result["nextCursorMark"]
     if next_cursor == current_cursor :
-        print("end of citations")
+        print("end of titles")
         break
     data = result["resultList"]["result"]
     tab = json_normalize(data)
     meta_table = tab[["title","pmcid"]]
 
     total_meta_table = total_meta_table.append(meta_table, ignore_index=True, sort = False)
-    progress(i,500,"fetching titles")
+    progress(i,500,"getting titles")
     i += 1
 
 
@@ -185,6 +195,9 @@ empty_title_rows = len(nodes_w_title.loc[pandas.isna(nodes_w_title["Title"]), :]
 
 
 #################### Replacing empty titles with pubtype #########################
+print(datetime.now().time(), "adding missing titles")
+
+
 if  empty_title_rows > 0:
     empty_title_indexes = nodes_w_title.loc[pandas.isna(nodes_w_title["Title"]), :].index
 
@@ -216,17 +229,19 @@ if  empty_title_rows > 0:
             nodes_w_title.loc[t, "Title"] = title
 
         progress(i, len(empty_title_indexes), "adding missing titles")
+        i+=1
+
 
 
 
 final_paper_nodes = nodes_w_title[["p_ind:ID(Paper-ID)", "PMCID", "PMID", "Title", ":LABEL"]]
 
-print("end time", datetime.now().time())
-
 
 clear = final_paper_nodes
 
 clear["Title"] = final_paper_nodes["Title"].str.replace("\n","")
+
+print(datetime.now().time(), "writing files")
 
 clear.to_csv(path_to_output_csv + "papers.csv", index = False)
 acs_nodes.to_csv(path_to_output_csv + "accessions.csv",index = False)
@@ -244,8 +259,14 @@ import_query = neo4j_home_dir + 'neo4j-admin import --database="imp.db" --id-typ
 #with open(path_to_output_csv + "run_import.bat", "w") as f:
 #    f.write(import_query)
 #    f.close()
+print(datetime.now().time(), "starting import to Neo4j")
+
+os.system("start /wait cmd /k" + import_query)
 
 
-os.system("start /wait cmd /c " + import_query)
 
 
+finish = datetime.now()
+elapsed = finish - start
+print(datetime.now().time(), "finished")
+print("time elapsed", elapsed)
