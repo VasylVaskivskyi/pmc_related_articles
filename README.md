@@ -38,4 +38,4 @@ Because of current limitatins of **admin-import tool** If you want to run script
 *https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW
 Just put it in NEO4J_home_folder/data/databases.
 
-Visualization script is modified version of tool made by @micwan88 https://github.com/micwan88/d3js-neo4j-example. 
+Visualization script is modified version of tool made by  @micwan88 https://github.com/micwan88/d3js-neo4j-example. 
