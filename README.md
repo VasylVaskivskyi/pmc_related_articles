@@ -1,6 +1,8 @@
 # pmc_related_articles
 In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp).
 
+![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/screenshot.JPG)
+
 For all of these to work you need Neo4j server. 
 	https://neo4j.com/download-center/#releases
 
