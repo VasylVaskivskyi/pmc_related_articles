@@ -20,8 +20,8 @@ How to run everything:
 1. Specify paths in process_and_import.py
 2. Write in following settings in Neo4j config file (NEO4J_home_folder/conf/neo4j.conf):
 
-	dbms.active_database=imp.db
-	dbms.security.auth_enabled=false (if you don't want to set up a password)
+		dbms.active_database=imp.db
+		dbms.security.auth_enabled=false (if you don't want to set up a password)
 	
 3. Open source code of query.html and specify your login, password, and path to server;
 
