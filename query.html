@@ -40,9 +40,7 @@
       <div class="col">
 		<a class="btn btn-primary" id = "open_article" href ="" target="_blank" role="button">Open article in EuropePMC</a>	
 		<div id="propertiesBox">
-		</div>
-		
-		
+		</div>	
       </div>
     </div>
   </div>
@@ -75,13 +73,16 @@
     //######################### variable #########################
     var nodeItemMap = {};
     var linkItemMap = {};
-
+	
     var d3Simulation = null;
     var circles;
     var circleText;
     var lines;
     var lineText;
-
+	
+	var current_id;
+	var current_article;
+	
     var itemColorMap = {};
     var colorScale = d3.scaleOrdinal(d3.schemeSet2);
 
@@ -222,7 +223,7 @@
     function clearProperties() {
       $('#propertiesBox').empty();
     }
-
+	
     function showProperties(d) {
       clearProperties();
 	  var propertiesText = '';	
@@ -241,16 +242,18 @@
 			propertiesText += key + ': ' + value + ('<br/><br/>');}
       });
 	  if (Object.keys(d.properties).includes('PMCID'))	{
-	   link = "https://europepmc.org/abstract/PMC/" + d.properties.PMCID;
+		link = "https://europepmc.org/abstract/PMC/" + d.properties.PMCID;
+				
 		}
 	  else if (!Object.keys(d.properties).includes('PMCID')){
 	   link = "https://europepmc.org/abstract/MED/" + d.properties.PMID;
+	  
 		}
       $('#propertiesBox').append($('<p></p>').html(propertiesText))
 	  $('#open_article').attr('href',link);
+	  
     }
 
-   
 
     function updateGraph() {
       var d3LinkForce = d3.forceLink()
@@ -274,22 +277,25 @@
         .data(d3LinkForce.links(), function(d) {return d.id;});
     /*  lineText = d3.select('#path-label-group').selectAll('text')
         .data(d3LinkForce.links(), function(d) {return d.id;});
-*/
-      circles.exit().remove();
+*/	
+
+	current_id = $.trim($('#queryText').val())
+
+	  circles.exit().remove();
       circles = circles.enter().append('circle')
         .attr('r', circleSize)
-        .attr('fill', getItemColor)
+        .attr('fill', function(d){var col =""; if (d.properties.PMCID == current_id || d.properties.PMID == current_id){col = "#1E90FF"} else {col = getItemColor(d)} return col} )
         .attr('stroke',"black")
         .call(drag_handler)
         .on('mouseover', function(d) {
           d3.select(this)
-            .attr('fill', function(d) {return getColorBrighter(getItemColor(d));})
+            .attr('fill', function(d) {var col =""; if (d.properties.PMCID == current_id || d.properties.PMID == current_id){col = "#AFEEEE"} else {col = getColorBrighter(getItemColor(d))} return col})
             .attr('stroke', "gray");
           showProperties(d);
         })
         .on('mouseout', function(d) {
           d3.select(this)
-            .attr('fill', getItemColor)
+            .attr('fill', function(d){var col =""; if (d.properties.PMCID == current_id || d.properties.PMID == current_id){col = "#1E90FF"} else {col = getItemColor(d)} return col} )
             .attr('stroke', "black");
         })
         .on('dblclick', function(d) {
@@ -308,7 +314,24 @@
 
       lines.exit().remove();
       lines = lines.enter().append('path').merge(lines);
-/*
+	  
+
+	function current_article(d){
+	
+		if (current_id.substr(0,3) == "PMC" && d.properties.PMCID == current_id){
+			current_artlicle = d.properties
+			$('#currentArticle').append($('<p></p>').text(current_article))
+		}
+		else if (d.properties.PMID == current_id){
+			current_artlicle = d.properties
+			$('#currentArticle').append($('<p></p>').text(current_article))
+		}
+	}	
+		
+
+
+	
+	/*
       lineText.exit().remove();
       lineText = lineText.enter().append('text')
         .attr('y', textPosOffsetY)
@@ -323,27 +346,31 @@
         });
     }
 
+
     function submitQuery(nodeID) {
       removeAlert();
 
       var queryStr = null;
       if (nodeID == null || !nodeID) {
         queryStr = $.trim($('#queryText').val());
-        if (queryStr == '') {
+		if (queryStr == '') {
           promptAlert($('#graphContainer'), 'Error: query text cannot be empty !', true);
           return;
         }
 			if ($('#chkboxCypherQry:checked').val() != 1){
-				console.log(queryStr);
-				if (queryStr.substr(0,3) == "PMC") {queryStr = 'match path = (p:Paper {PMCID:\''+ queryStr + '\'})-[:ACCESSION]->(:Accession)<-[:ACCESSION]-(:Paper) return path'}
-				else {queryStr = 'match path = (p:Paper {PMID:\'' + queryStr + '\'})-[:ACCESSION]->(:Accession)<-[:ACCESSION]-(:Paper) return path'};
+				if (queryStr.substr(0,3) == "PMC"){
+						queryStr = 'OPTIONAL MATCH zz=(p:Paper{PMCID:\''+ queryStr + '\'})-[:ACCESSION]->(acs:Accession) ' +
+						'OPTIONAL MATCH pp= (p:Paper{PMCID:\''+ queryStr + '\'})-[:ACCESSION]->(acs:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz'
+						}
+				else {queryStr = 'OPTIONAL MATCH zz=(p:Paper{PMID:\''+ queryStr + '\'})-[:ACCESSION]->(acs:Accession) ' +
+						'OPTIONAL MATCH pp= (p:Paper{PMID:\''+ queryStr + '\'})-[:ACCESSION]->(acs:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz'};
 				console.log(queryStr);
 			}
       } else
         queryStr = 'match (n)-[j]-(k) where id(n) = ' + nodeID + ' return n,j,k';
 
       stopSimulation();
-
+		
       if (nodeID == null || !nodeID) {
         nodeItemMap = {};
         linkItemMap = {};
@@ -364,8 +391,9 @@
               if (dataItem.graph.nodes != null && dataItem.graph.nodes.length > 0) {
                 var neo4jNodeItmArray = dataItem.graph.nodes;
                 neo4jNodeItmArray.forEach(function(nodeItm) {
-                  if (!(nodeItm.id in nodeItemMap))
-                    nodeItemMap[nodeItm.id] = nodeItm;
+                  if (!(nodeItm.id in nodeItemMap)){
+                    nodeItemMap[nodeItm.id] = nodeItm;}
+				  
                 });
               }
               //Link
@@ -380,14 +408,14 @@
                 });
               }
             });
-
+			
             console.log('nodeItemMap.size:' + Object.keys(nodeItemMap).length);
             console.log('linkItemMap.size:' + Object.keys(linkItemMap).length);
 
             updateGraph();
             return;
           }
-
+			
           //also update graph when empty
           updateGraph();
           promptAlert($('#graphContainer'), 'No record found !', false);
