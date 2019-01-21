@@ -261,13 +261,14 @@
         .id(function(d) {return d.id;});
 
       d3Simulation = d3.forceSimulation()
-        .force('charge', d3.forceManyBody().strength(-250))
-        .force('collideForce', d3.forceCollide(collideForceSize).iterations(1))
-	.force('center', d3.forceCenter(100, 100))
-	//.force("x", d3.forceX(graphWidth / 4))
-	//.force("y", d3.forceY(graphHeight / 6))
-        .nodes(mapToArray(nodeItemMap))
-        .force('linkForce', d3LinkForce);
+	.force('charge', d3.forceManyBody().strength(-250))
+	.force('collideForce', d3.forceCollide(collideForceSize).iterations(1))
+	//.force('center', d3.forceCenter(100, 100))
+	.force("x", d3.forceX(graphWidth / 4).strength(0.03))
+	.force("y", d3.forceY(graphHeight / 4).strength(0.03))
+	.nodes(mapToArray(nodeItemMap))
+	.force('linkForce', d3LinkForce);
+
 
       circles = d3.select('#circle-group').selectAll('circle')
         .data(d3Simulation.nodes(), function(d) {return d.id;});
