@@ -1,5 +1,6 @@
 # pmc_related_articles
-In this database you can create relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp) and explore them using D3 js renderer.
+In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp).
+
 For all of these to work you need Neo4j server. 
 	https://neo4j.com/download-center/#releases
 
