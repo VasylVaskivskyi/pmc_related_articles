@@ -17,7 +17,7 @@ How Python script works
 
 How to run everything:
 
-1. Specify paths in process_and_import.py
+1. Specify paths in process_and_import.py, and run script. It takes up to 30 minutes to finish everything.
 2. Write in following settings in Neo4j config file (NEO4J_home_folder/conf/neo4j.conf):
 
 		dbms.active_database=imp.db
@@ -28,4 +28,5 @@ How to run everything:
 Warning:
 Because of current limitatins of "admin-import tool" If you want to run script again, you have to delete the database "imp.db" or specify another name for it.
 
-Visualization tool is took from here https://github.com/micwan88/d3js-neo4j-example.
+
+Visualization script is modified version of tool made by micwan88 https://github.com/micwan88/d3js-neo4j-example. 
