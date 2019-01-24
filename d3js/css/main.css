@@ -13,6 +13,10 @@ body {
 	border: 1px solid #CCCCCC;
 }
 
+.dropdown-item {
+	cursor: pointer;
+}
+
 svg {
 	border: 1px dashed #CCCCCC;
 }
