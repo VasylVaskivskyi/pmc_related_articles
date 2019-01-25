@@ -1,4 +1,4 @@
-# pmc_related_articles
+# Realted articles search tool for EuropePMC 
 
 In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp).
 
