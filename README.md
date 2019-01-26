@@ -1,6 +1,6 @@
 # Realted articles search tool for EuropePMC 
 
-In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp).
+In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML foramts.
 
 ![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/screenshot.JPG)
 
