@@ -1,6 +1,6 @@
 # Realted articles search tool for EuropePMC 
 
-In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML foramts.
+In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
 
 ![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/screenshot.JPG)
 
@@ -34,9 +34,9 @@ dbms.security.auth_enabled=false (if you don't want to set up a password)
 **Warning:**\
 Because of current limitatins of **admin-import tool** If you want to run script again, you have to delete the database "imp.db" or specify another name for it.
 
-**[Papers available in database](https://europepmc.org/search?query=%28FIRST_PDATE:%5B1900-01-01+TO+2018-11-30%5D%29+AND+ACCESSION_TYPE:*&page=1)**
+**[Papers available in database.](https://europepmc.org/search?query=%28FIRST_PDATE:%5B1900-01-01+TO+2018-11-30%5D%29+AND+ACCESSION_TYPE:*&page=1)**
 
-**[Ready output database of process_and_import.py is available here](https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW)**
+**[Ready output database of process_and_import.py is available here.](https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW)**
 
 Just put it in NEO4J_home_folder/data/databases.
 
