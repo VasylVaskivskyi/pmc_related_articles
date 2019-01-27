@@ -39,15 +39,33 @@
       </div>
       <div class="col">
 		<div class="btn-group">
-			<a class="btn btn-primary" id = "open_article" href ="" target="_blank" role="button">Open article in EuropePMC</a>	
+			<a class="btn btn-primary" id = "open_article" href ="" target="_blank" role="button">Show more info</a>	
 			<div class="dropdown">
-			  <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				Save graph
 			  </button>
-			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
 				<a class="dropdown-item" onclick ="save_as_json()">JSON</a>
 				<a class="dropdown-item" onclick = "save_as_gml()">GML</a>
 				<a class="dropdown-item" onclick = "save_as_xgmml()">XGMML</a>
+				<a class="dropdown-item" onclick = "save_as_svg()">SVG</a>
+			  </div>	
+			</div>
+			<div class="dropdown">
+			  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<i class='fa fa-ellipsis-v'></i>
+			  </button>
+			  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+				<a class="dropdown-item">Text in nodes
+					<div class="form-check">
+						<input type="radio" class="form-check-input" id="display_id" name="exampleRadios" onclick ="updateGraph()" value="1" >
+						<label class="form-check-label" for="display_id">IDs</label>
+					</div>
+					<div class="form-check">
+						<input type="radio" class="form-check-input" id="display_title" name="exampleRadios" onclick ="updateGraph()" value="1">
+						<label class="form-check-label" for="display_title">Titles</label>
+					</div>
+				</a>	
 			  </div>
 			</div>
 		</div>		
@@ -327,7 +345,7 @@
       circleText = circleText.enter().append('text')
         .attr('y', textPosOffsetY)
         .attr('text-anchor', 'middle')
-        .text(function(d) { if (d.labels[0] == "Paper"){ var t = d.properties.Title} else { var t = d.properties.Term}; return t.substr(0,6);})
+        .text(function(d){if (d.labels[0] == "Paper" ){ var t = d.properties.Title} else { var t = d.properties.Term};return t.substr(0,6);})
         .merge(circleText);
 
       lines.exit().remove();
@@ -416,11 +434,11 @@
 			
 			var nodes = [nodeItemMap];
 			var edges = [linkItemMap];
-			neo_input_json = JSON.stringify({nodes,edges},null,2);
+			neo_input_json = JSON.stringify({nodes:nodes,edges:edges},null,2);
 				
 			
 			updateGraph();
-			modified_json = {nodes,edges};
+			modified_json = {nodes:nodes,edges:edges};
 			
             return;
           }
@@ -489,7 +507,7 @@
 		var blob = new Blob([full_gml], {type: "text/plain;charset=utf-8"});  
 		saveAs(blob, "graph.gml");
 	
-	}
+	};
 	
 	function save_as_xgmml(){
 		var n_xgmml = "";
@@ -539,21 +557,35 @@
 		var full_xgmml = "<?xml version=\"1.0\"?>\n" + "<\!DOCTYPE graph SYSTEM \"xgmml.dtd\">\n" +"<graph directed=\"1\" graphic=\"1\" Layout=\"points\">\n" + n_xgmml + e_xgmml + "</graph>"
 		var blob = new Blob([full_xgmml], {type: "text/plain;charset=utf-8"});  
 		saveAs(blob, "graph.xgmml");				
-	}	
+	};	
+	
+	
+	function save_as_svg(){
+		var svg_data = document.getElementById("resultSvg").innerHTML
+		var head = '<svg title="graph" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+		var style = '<style>circle {cursor: pointer;stroke-width: 1.5px;}text {font: 10px arial;}path {stroke: DimGrey;stroke-width: 1.5px;}</style>'
+
+		var full_svg = head +  style + svg_data + "</svg>"
+		var blob = new Blob([full_svg], {type: "image/svg+xml"});  
+		saveAs(blob, "graph.svg");
+		
+	
+	};
 	
 	function getItemColor(d) {
       if (!(d.labels[0] in itemColorMap))
         itemColorMap[d.labels[0]] = colorScale(d.labels[0]);
       return itemColorMap[d.labels[0]];
-    }
+    };
 
-    function getColorBrighter(targetColor) {
+	function getColorBrighter(targetColor) {
       return d3.rgb(targetColor).brighter(0.7).toString();
-    }
+    };
 
     function getColorDarker(targetColor) {
       return d3.rgb(targetColor).darker().toString();
-    }
+    };
+	
 
     //Page Init
     $(function() {

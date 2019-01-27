@@ -29,10 +29,9 @@ circle {
 text {
 	font: 10px arial;
 	pointer-events: none;
-  	/*text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;*/
 }
 
 path {
-	stroke: #403E3E;
+	stroke: DimGrey;
 	stroke-width: 1.5px;
 }
