@@ -374,7 +374,7 @@ function submitQuery(nodeID) {
 
 
 
-function save_as_json() {
+export function save_as_json() {
     var blob = new Blob([neo_input_json], { type: "text/plain;charset=utf-8" });
     saveAs(blob, "graph.json");
 }
@@ -517,6 +517,10 @@ $(function() {
 
     $('#btnSend').click(function() { submitQuery() });
 
+    $('#save_as_json').click(save_as_json)
+    $('#save_as_gml').click(save_as_gml)
+    $('#save_as_xgmml').click(save_as_xgmml)
+    $('#save_as_svg').click(save_as_svg)
 
     $('#chkboxCypherQry').change(function() {
         if (this.checked)

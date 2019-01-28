@@ -42,10 +42,10 @@
                             Save graph
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" onclick ="save_as_json()">JSON</a>
-                            <a class="dropdown-item" onclick = "save_as_gml()">GML</a>
-                            <a class="dropdown-item" onclick = "save_as_xgmml()">XGMML</a>
-                            <a class="dropdown-item" onclick = "save_as_svg()">SVG</a>
+                            <a class="dropdown-item" id="save_as_json">JSON</a>
+                            <a class="dropdown-item" id="save_as_gml">GML</a>
+                            <a class="dropdown-item" id="save_as_xgmml">XGMML</a>
+                            <a class="dropdown-item" id="save_as_svg">SVG</a>
                         </div>
                     </div>
                     <div class="dropdown">
@@ -54,15 +54,15 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item">Text in nodes
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="display_id" name="exampleRadios" onclick ="updateGraph()" value="1" >
-            <label class="form-check-label" for="display_id">IDs</label>
-          </div>
-          <div class="form-check">
-            <input type="radio" class="form-check-input" id="display_title" name="exampleRadios" onclick ="updateGraph()" value="1">
-            <label class="form-check-label" for="display_title">Titles</label>
-          </div>
-        </a>
+                              <div class="form-check">
+                                <input type="radio" class="form-check-input" id="display_id" name="exampleRadios" onclick ="updateGraph()" value="1" >
+                                <label class="form-check-label" for="display_id">IDs</label>
+                              </div>
+                              <div class="form-check">
+                                <input type="radio" class="form-check-input" id="display_title" name="exampleRadios" onclick ="updateGraph()" value="1">
+                                <label class="form-check-label" for="display_title">Titles</label>
+                              </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -71,6 +71,7 @@
             </div>
         </div>
     </div>
+    
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="d3js/js/jquery-3.3.1.min.js"></script>
     <script src="d3js/js/popper.min.js"></script>
