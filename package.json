@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
-    "webpack": "./node_modules/.bin/webpack -w"
+    "webpack": "./node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",
