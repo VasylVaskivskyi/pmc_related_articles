@@ -36,5 +36,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.0"
   }
 }
