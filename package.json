@@ -1,0 +1,43 @@
+{
+  "name": "pmc_related_articles",
+  "version": "1.0.0",
+  "description": "A database at Europe PMC to explore relationships between articles that have common accession numbers.",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src",
+    "webpack": "./node_modules/.bin/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yucigou/pmc_related_articles.git"
+  },
+  "keywords": [
+    "article",
+    "relationship",
+    "accession",
+    "number"
+  ],
+  "author": "Vasyl Vaskivskyi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yucigou/pmc_related_articles/issues"
+  },
+  "homepage": "https://github.com/yucigou/pmc_related_articles#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.12.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "file-saver": "^2.0.0"
+  }
+}
