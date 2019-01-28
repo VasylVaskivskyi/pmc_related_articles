@@ -22,7 +22,7 @@ const config = {
          loader: "babel-loader",
          options: {
            cacheDirectory: true,
-           presets: ['env'] // Transpiles ES2015+
+           presets: ['@babel/preset-env'] // Transpiles ES2015+
          }
        }]
      }

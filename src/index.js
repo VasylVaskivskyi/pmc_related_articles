@@ -1,7 +1,7 @@
 "use strict";
 
-import { saveAs } from 'file-saver'
-// var { saveAs } = require('file-saver')
+// import { saveAs } from 'file-saver'
+var { saveAs } = require('file-saver')
 
 //######################### const #########################
 var graphWidth = 1024;
