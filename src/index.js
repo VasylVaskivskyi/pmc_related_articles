@@ -35,6 +35,7 @@ var lines
 var lineText
 
 var current_id
+var currentAccessionID
 
 var itemColorMap = {}
 var colorScale = d3.scaleOrdinal(d3.schemeSet2)
@@ -244,6 +245,13 @@ function showProperties(d) {
 }
 
 function updateGraph() {
+  current_id = $.trim($('#queryText').val())
+  if (current_id.substr(0, 4).toLowerCase() == 'acs:') {
+    currentAccessionID = current_id.substr(4)
+    current_id = null
+  }
+
+
   var d3LinkForce = d3
     .forceLink()
     .distance(linkForceSize)
@@ -284,55 +292,23 @@ function updateGraph() {
         .data(d3LinkForce.links(), function(d) {return d.id;});
 */
 
-  current_id = $.trim($('#queryText').val())
-
   circles.exit().remove()
   circles = circles
     .enter()
     .append('circle')
     .attr('r', circleSize)
-    .attr('fill', function(d) {
-      var col = ''
-      if (d.properties.PMCID == current_id || d.properties.PMID == current_id) {
-        col = '#1E90FF'
-      } else {
-        col = getItemColor(d)
-      }
-      return col
-    })
+    .attr('fill', function(d){return nodeColor(d,'#1E90FF')})
     .attr('stroke', 'black')
     .call(drag_handler)
     .on('mouseover', function(d) {
       d3.select(this)
-        .attr('fill', function(d) {
-          var col = ''
-          if (
-            d.properties.PMCID == current_id ||
-            d.properties.PMID == current_id
-          ) {
-            col = '#AFEEEE'
-          } else {
-            col = getColorBrighter(getItemColor(d))
-          }
-          return col
-        })
+        .attr('fill', function(d){return nodeColorBrighter(d,'#AFEEEE')})
         .attr('stroke', 'gray')
       showProperties(d)
     })
     .on('mouseout', function(d) {
       d3.select(this)
-        .attr('fill', function(d) {
-          var col = ''
-          if (
-            d.properties.PMCID == current_id ||
-            d.properties.PMID == current_id
-          ) {
-            col = '#1E90FF'
-          } else {
-            col = getItemColor(d)
-          }
-          return col
-        })
+        .attr('fill', function(d) {return nodeColor(d,'#1E90FF')})
         .attr('stroke', 'black')
     })
     .on('dblclick', function(d) {
@@ -392,7 +368,12 @@ function submitQuery(nodeID) {
       return
     }
     if ($('#chkboxCypherQry:checked').val() != 1) {
-      if (queryStr.substr(0, 3) == 'PMC') {
+      if (queryStr.substr(0, 4).toLowerCase() == 'acs:') {
+        queryStr =
+          "OPTIONAL MATCH zz= (:Paper)-[:ACCESSION]->(acs:Accession {Term:'" +
+          queryStr.substr(4) +
+          "'}) RETURN zz"
+      } else if (queryStr.substr(0, 3) == 'PMC') {
         queryStr =
           "OPTIONAL MATCH zz=(p:Paper{PMCID:'" +
           queryStr +
@@ -706,6 +687,38 @@ function save_as_svg() {
   saveAs(blob, 'graph.svg')
 }
 
+function nodeColor(d,color){
+  var col = ''
+  if (current_id == null && d.properties.Term == currentAccessionID) {
+    col = color
+  } else if (
+    current_id !== null &&
+    (d.properties.PMCID == current_id ||
+      d.properties.PMID == current_id)
+  ) {
+    col = color
+  } else {
+    col = getItemColor(d)
+  }
+  return col
+}
+
+function nodeColorBrighter(d,color){
+  var col = ''
+  if (current_id == null && d.properties.Term == currentAccessionID) {
+    col = color
+  } else if (
+    current_id !== null &&
+    (d.properties.PMCID == current_id ||
+      d.properties.PMID == current_id)
+  ) {
+    col = color
+  } else {
+    col = getColorBrighter(getItemColor(d))
+  }
+  return col
+}
+
 function getItemColor(d) {
   if (!(d.labels[0] in itemColorMap))
     itemColorMap[d.labels[0]] = colorScale(d.labels[0])
@@ -749,6 +762,10 @@ $(function() {
 
   $('#chkboxCypherQry').change(function() {
     if (this.checked) $('#queryText').prop('placeholder', 'Cypher')
-    else $('#queryText').prop('placeholder', 'PMCID or PMID')
+    else
+      $('#queryText').prop(
+        'placeholder',
+        'Enter PMCID, PMID or acs:Accession Number'
+      )
   })
 })
