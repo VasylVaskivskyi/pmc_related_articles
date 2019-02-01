@@ -15,16 +15,16 @@ with open("PATHS.txt","r") as f:
 
     for line in f.readlines():
         if line.startswith("neo4j"):
-            neo4j_home_dir = line.split("=")[1]
+            neo4j_home_dir = str(line.split("=")[1]).rstrip("\r\n")
 
         elif line.startswith("name"):
-            database_name = line.split("=")[1]
+            database_name = str(line.split("=")[1]).rstrip("\r\n")
 
         elif line.startswith("where"):
-            path_to_databases = line.split("=")[1]
+            path_to_databases = str(line.split("=")[1]).rstrip("\r\n")
 
         elif line.startswith("path"):
-            path_to_output_csv = line.split("=")[1]
+            path_to_output_csv = str(line.split("=")[1]).rstrip("\r\n")
 
         elif line.startswith("#"):
             None
