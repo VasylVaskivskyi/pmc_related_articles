@@ -2,7 +2,7 @@
 
 In this database you can explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
 
-![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/screenshot.JPG)
+![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/viewport.JPG)
 
 For all of these to work you need Neo4j server.\
 https://neo4j.com/download-center/#releases
@@ -36,7 +36,7 @@ Because of current limitatins of **admin-import tool** If you want to run script
 
 **[Papers available in database.](https://europepmc.org/search?query=%28FIRST_PDATE:%5B1900-01-01+TO+2018-11-30%5D%29+AND+ACCESSION_TYPE:*&page=1)**
 
-**[Ready output database of process_and_import.py is available here.](https://drive.google.com/open?id=1zYwG32NxZfxDbqPLu4upCQOUNb8H2qGW)**
+**[Ready output database of process_and_import.py is available here.](https://drive.google.com/open?id=1xiqYwQsHvS9fJkrnh-xthyPQi2RrVQFI)**
 
 Just put it in NEO4J_home_folder/data/databases.
 
