@@ -10,6 +10,7 @@ var arrowHeight = 5
 var arrowWidth = 5
 
 var neo4jAPIURL = 'http://localhost:7474/db/data/transaction/commit'
+
 var neo4jLogin = 'neo4j'
 var neo4jPassword = '1234'
 
@@ -251,7 +252,6 @@ function updateGraph() {
     current_id = null
   }
 
-
   var d3LinkForce = d3
     .forceLink()
     .distance(linkForceSize)
@@ -297,18 +297,24 @@ function updateGraph() {
     .enter()
     .append('circle')
     .attr('r', circleSize)
-    .attr('fill', function(d){return nodeColor(d,'#1E90FF')})
+    .attr('fill', function(d) {
+      return nodeColor(d, '#1E90FF')
+    })
     .attr('stroke', 'black')
     .call(drag_handler)
     .on('mouseover', function(d) {
       d3.select(this)
-        .attr('fill', function(d){return nodeColorBrighter(d,'#AFEEEE')})
+        .attr('fill', function(d) {
+          return nodeColorBrighter(d, '#AFEEEE')
+        })
         .attr('stroke', 'gray')
       showProperties(d)
     })
     .on('mouseout', function(d) {
       d3.select(this)
-        .attr('fill', function(d) {return nodeColor(d,'#1E90FF')})
+        .attr('fill', function(d) {
+          return nodeColor(d, '#1E90FF')
+        })
         .attr('stroke', 'black')
     })
     .on('dblclick', function(d) {
@@ -371,7 +377,7 @@ function submitQuery(nodeID) {
       if (queryStr.substr(0, 4).toLowerCase() == 'acs:') {
         queryStr =
           "OPTIONAL MATCH zz= (:Paper)-[:ACCESSION]->(acs:Accession {Term:'" +
-          queryStr.substr(4) +
+          queryStr.substr(4).toUpperCase() +
           "'}) RETURN zz"
       } else if (queryStr.substr(0, 3) == 'PMC') {
         queryStr =
@@ -687,14 +693,13 @@ function save_as_svg() {
   saveAs(blob, 'graph.svg')
 }
 
-function nodeColor(d,color){
+function nodeColor(d, color) {
   var col = ''
   if (current_id == null && d.properties.Term == currentAccessionID) {
     col = color
   } else if (
     current_id !== null &&
-    (d.properties.PMCID == current_id ||
-      d.properties.PMID == current_id)
+    (d.properties.PMCID == current_id || d.properties.PMID == current_id)
   ) {
     col = color
   } else {
@@ -703,14 +708,13 @@ function nodeColor(d,color){
   return col
 }
 
-function nodeColorBrighter(d,color){
+function nodeColorBrighter(d, color) {
   var col = ''
   if (current_id == null && d.properties.Term == currentAccessionID) {
     col = color
   } else if (
     current_id !== null &&
-    (d.properties.PMCID == current_id ||
-      d.properties.PMID == current_id)
+    (d.properties.PMCID == current_id || d.properties.PMID == current_id)
   ) {
     col = color
   } else {
@@ -729,13 +733,6 @@ function getColorBrighter(targetColor) {
   return d3
     .rgb(targetColor)
     .brighter(0.7)
-    .toString()
-}
-
-function getColorDarker(targetColor) {
-  return d3
-    .rgb(targetColor)
-    .darker()
     .toString()
 }
 
