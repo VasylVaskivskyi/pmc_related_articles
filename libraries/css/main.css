@@ -1,0 +1,53 @@
+body {
+	padding-top: 15px;
+}
+
+
+#btnSend {
+	margin-left: 10px;
+}
+
+#btnConnected {
+	margin-left: 10px;
+}
+
+#propertiesBox {
+	overflow: auto;
+	height: 612px;
+	width: auto;
+	border: 1px solid #CCCCCC;
+}
+.col{
+	margin-left: 10px;
+}
+#graphContainer{
+	margin-left:-5px;
+}
+
+.dropdown-item {
+	cursor: pointer;
+}
+.dropdown-item:active,
+.dropdown-item.active {
+  color: white !important;
+}
+
+
+svg {
+	border: 1px dashed #CCCCCC;
+}
+
+circle {
+	cursor: pointer;
+	stroke-width: 1.5px;
+}
+
+text {
+	font: 10px arial;
+	pointer-events: none;
+}
+
+path {
+	stroke: DimGrey;
+	stroke-width: 1.5px;
+}
