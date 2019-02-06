@@ -11,15 +11,16 @@
     <meta name="author" content="Mic Wan" />
     <title>Neo4j visualization</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="d3js/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="d3js/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="libraries/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="libraries/css/font-awesome.min.css" />
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="d3js/css/main.css" />
+    <link rel="stylesheet" href="libraries/css/main.css" />
   </head>
 
   <body>
     <div class="container-fluid">
       <div class="row">
+	  <div class="col">
         <div class="col col-12 col-md-12 form-inline">
           <input
             type="text"
@@ -33,7 +34,7 @@
             class="btn btn-outline-primary btn-sm"
             id="btnSend"
           >
-            <i class="fa fa-check" aria-hidden="true"></i> Send&nbsp;
+            <i class="fa fa-check" aria-hidden="true"></i> Search&nbsp;
           </button>
           &nbsp;
           <input
@@ -46,11 +47,40 @@
             >Use Cypher Query</label
           >
         </div>
+		</div>
+		<div class="col">
+		<div class="col col-12 col-md-12 form-inline">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            size="40px"
+            id="isItConnected"
+            placeholder="PMCID, PMID or acs:Accession Number"
+          />
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            id="btnConnected"
+          >
+            <i aria-hidden="true"></i>Is it connected?&nbsp;
+          </button>
+          &nbsp;
+            <input
+            class="form-check-input"
+            type="checkbox"
+            id="chkboxConnected"
+            value="1"
+          />
+          <label class="form-check-label" for="chkboxConnected"
+            >New Search</label
+          >
+         </div>
+		</div> 
       </div>
     </div>
     <hr />
     <div class="container-fluid">
-      <div class="row">
+      <div class="row no-gutters">
         <div class="col" id="graphContainer">
           <svg id="resultSvg"></svg>
         </div>
@@ -100,33 +130,9 @@
                 class="dropdown-menu dropdown-menu-right"
                 aria-labelledby="dropdownMenuButton"
               >
-                <a class="dropdown-item"
-                  >Text in nodes
-                  <div class="form-check">
-                    <input
-                      type="radio"
-                      class="form-check-input"
-                      id="display_id"
-                      name="exampleRadios"
-                      onclick="updateGraph()"
-                      value="1"
-                    />
-                    <label class="form-check-label" for="display_id">IDs</label>
-                  </div>
-                  <div class="form-check">
-                    <input
-                      type="radio"
-                      class="form-check-input"
-                      id="display_title"
-                      name="exampleRadios"
-                      onclick="updateGraph()"
-                      value="1"
-                    />
-                    <label class="form-check-label" for="display_title"
-                      >Titles</label
-                    >
-                  </div>
-                </a>
+                <h6 class="dropdown-header">Text in nodes</h6>
+				        <a class="dropdown-item" id="display_id">ID</a>
+                <a class="dropdown-item active" id="display_title">Title</a>
               </div>
             </div>
           </div>
@@ -136,11 +142,11 @@
     </div>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="d3js/js/jquery-3.3.1.min.js"></script>
-    <script src="d3js/js/popper.min.js"></script>
-    <script src="d3js/js/bootstrap.min.js"></script>
-    <script src="d3js/js/d3.v5.min.js"></script>
-    <script src="d3js/js/d3js-example-neo4j.js"></script>
+    <script src="libraries/js/jquery-3.3.1.min.js"></script>
+    <script src="libraries/js/popper.min.js"></script>
+    <script src="libraries/js/bootstrap.min.js"></script>
+    <script src="libraries/js/d3.v5.min.js"></script>
+    <script src="libraries/js/d3js-example-neo4j.js"></script>
     <script src="build/bundle.js"></script>
   </body>
 </html>

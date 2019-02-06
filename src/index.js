@@ -1,10 +1,14 @@
 'use strict'
 
-// import { saveAs } from 'file-saver'
-var { saveAs } = require('file-saver')
+import { saveAs } from '../libraries/js/FileSaver.min.js'
+//var { saveAs } = require('file-saver')
 
 //######################### const #########################
-var graphWidth = 1024
+var w = window.innerWidth
+|| document.documentElement.clientWidth
+|| document.body.clientWidth
+
+var graphWidth = w - Math.floor(w/3)
 var graphHeight = 650
 var arrowHeight = 5
 var arrowWidth = 5
@@ -14,7 +18,7 @@ var neo4jAPIURL = 'http://localhost:7474/db/data/transaction/commit'
 var neo4jLogin = 'neo4j'
 var neo4jPassword = '1234'
 
-var circleSize = 20
+var circleSize = 22
 var textPosOffsetY = 5
 
 var collideForceSize = circleSize + 5
@@ -35,8 +39,8 @@ var circleText
 var lines
 var lineText
 
-var current_id
-var currentAccessionID
+var currentID = null
+var currentAccessionID = null
 
 var itemColorMap = {}
 var colorScale = d3.scaleOrdinal(d3.schemeSet2)
@@ -132,13 +136,6 @@ function initGraph() {
     .attr('transform', 'translate(' + centerX + ',' + centerY + ')')
 
   zoom_handler(svg)
-}
-
-function stopSimulation() {
-  if (d3Simulation != null) {
-    d3Simulation.stop().on('tick', null)
-    d3Simulation = null
-  }
 }
 
 function tick() {
@@ -246,10 +243,10 @@ function showProperties(d) {
 }
 
 function updateGraph() {
-  current_id = $.trim($('#queryText').val())
-  if (current_id.substr(0, 4).toLowerCase() == 'acs:') {
-    currentAccessionID = current_id.substr(4)
-    current_id = null
+  currentID = $.trim($('#queryText').val())
+  if (currentID.substr(0, 4).toLowerCase() == 'acs:') {
+    currentAccessionID = currentID.substr(4)
+    currentID = null
   }
 
   var d3LinkForce = d3
@@ -331,13 +328,13 @@ function updateGraph() {
     .attr('y', textPosOffsetY)
     .attr('text-anchor', 'middle')
     .text(function(d) {
-      if (d.labels[0] == 'Paper') {
-        var t = d.properties.Title
-      } else {
-        var t = d.properties.Term
-      }
-      return t.substr(0, 6)
-    })
+        if (d.labels[0] == 'Paper') {
+            var t = d.properties.Title
+          } else {
+            var t = d.properties.Term
+          }
+          return t.substr(0, 7)
+      })
     .merge(circleText)
 
   lines.exit().remove()
@@ -363,43 +360,41 @@ function submitQuery(nodeID) {
   removeAlert()
 
   var queryStr = null
+  var queryNode = ''
   if (nodeID == null || !nodeID) {
     queryStr = $.trim($('#queryText').val())
     if (queryStr == '') {
       promptAlert(
         $('#graphContainer'),
-        'Error: query text cannot be empty !',
+        'Error: query text cannot be empty!',
         true
       )
       return
     }
+
     if ($('#chkboxCypherQry:checked').val() != 1) {
+      queryNode = modifyAsNode('p', queryStr)
+
       if (queryStr.substr(0, 4).toLowerCase() == 'acs:') {
         queryStr =
-          "OPTIONAL MATCH zz= (:Paper)-[:ACCESSION]->(acs:Accession {Term:'" +
-          queryStr.substr(4).toUpperCase() +
-          "'}) RETURN zz"
-      } else if (queryStr.substr(0, 3) == 'PMC') {
-        queryStr =
-          "OPTIONAL MATCH zz=(p:Paper{PMCID:'" +
-          queryStr +
-          "'})-[:ACCESSION]->(acs:Accession) " +
-          "OPTIONAL MATCH pp= (p:Paper{PMCID:'" +
-          queryStr +
-          "'})-[:ACCESSION]->(acs:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz"
+          'OPTIONAL MATCH zz=(:Paper)-[:ACCESSION]->' + queryStr + ' RETURN zz'
       } else {
         queryStr =
-          "OPTIONAL MATCH zz=(p:Paper{PMID:'" +
-          queryStr +
-          "'})-[:ACCESSION]->(acs:Accession) " +
-          "OPTIONAL MATCH pp= (p:Paper{PMID:'" +
-          queryStr +
-          "'})-[:ACCESSION]->(acs:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz"
+          'OPTIONAL MATCH zz=' +
+          queryNode +
+          '-[:ACCESSION]->(acs:Accession)' +
+          ' OPTIONAL MATCH pp=' +
+          queryNode +
+          '-[:ACCESSION]->(acs:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz'
       }
+
       console.log(queryStr)
+    } else {
+      queryStr = queryStr
     }
-  } else
-    queryStr = 'match (n)-[j]-(k) where id(n) = ' + nodeID + ' return n,j,k'
+  } else {
+    queryStr = 'MATCH (n)-[j]-(k) WHERE id(n) = ' + nodeID + ' RETURN n,j,k'
+  }
 
   stopSimulation()
 
@@ -472,7 +467,7 @@ function submitQuery(nodeID) {
 
       //also update graph when empty
       updateGraph()
-      promptAlert($('#graphContainer'), 'No record found !', false)
+      promptAlert($('#graphContainer'), 'No record found!', false)
     },
     'json'
   )
@@ -486,7 +481,176 @@ function submitQuery(nodeID) {
   })
 }
 
-export function save_as_json() {
+function isItConnected() {
+  removeAlert()
+
+  var queryStr = null
+  var fromNode = ''
+  var toNode = ''
+  var searchStr = $.trim($('#queryText').val())
+
+  queryStr = $.trim($('#isItConnected').val())
+
+  if (queryStr == '') {
+    promptAlert(
+      $('#graphContainer'),
+      'Error: query text cannot be empty!',
+      true
+    )
+    return
+  }
+
+  if (
+    queryStr != '' &&
+    (queryStr == searchStr ||
+      queryStr == currentID ||
+      queryStr == currentAccessionID)
+  ) {
+    promptAlert(
+      $('#graphContainer'),
+      'Error: you cannot use same values!',
+      true
+    )
+    return
+  }
+
+  console.log('1', queryStr)
+
+  if ($('#chkboxConnected:checked').val() != 1) {
+    if (currentAccessionID != null && currentID == null) {
+      fromNode = modifyAsNode('p1', currentAccessionID)
+      toNode = modifyAsNode('p2', queryStr)
+    } else if (currentID != null) {
+      fromNode = modifyAsNode('p1', currentID)
+      toNode = modifyAsNode('p2', queryStr)
+
+      queryStr =
+        'MATCH ' +
+        fromNode +
+        ',' +
+        toNode +
+        ', path=shortestpath((p1)-[*..15]-(p2)) RETURN path'
+    }
+  } else {
+    nodeItemMap = {}
+    linkItemMap = {}
+    var val1 = queryStr.split(',')[0]
+    var val2 = queryStr.split(',')[1]
+    fromNode = modifyAsNode('p1', val1)
+    toNode = modifyAsNode('p2', val2)
+    queryStr =
+      'MATCH ' +
+      fromNode +
+      ',' +
+      toNode +
+      ', path=shortestpath((p1)-[*..15]-(p2)) RETURN path'
+  }
+
+  console.log('2', queryStr)
+
+  stopSimulation()
+
+  var jqxhr = $.post(
+    neo4jAPIURL,
+    '{"statements":[{"statement":"' +
+      queryStr +
+      '", "resultDataContents":["graph"]}]}',
+    function(data) {
+      //console.log(JSON.stringify(data));
+      if (data.errors != null && data.errors.length > 0) {
+        promptAlert(
+          $('#graphContainer'),
+          'Error: ' + data.errors[0].message + '(' + data.errors[0].code + ')',
+          true
+        )
+        return
+      }
+
+      if (
+        data.results != null &&
+        data.results.length > 0 &&
+        data.results[0].data != null &&
+        data.results[0].data.length > 0
+      ) {
+        var neo4jDataItmArray = data.results[0].data
+        neo4jDataItmArray.forEach(function(dataItem) {
+          //Node
+          if (dataItem.graph.nodes != null && dataItem.graph.nodes.length > 0) {
+            var neo4jNodeItmArray = dataItem.graph.nodes
+            neo4jNodeItmArray.forEach(function(nodeItm) {
+              if (!(nodeItm.id in nodeItemMap)) {
+                nodeItemMap[nodeItm.id] = nodeItm
+              }
+            })
+          }
+          //Link
+          if (
+            dataItem.graph.relationships != null &&
+            dataItem.graph.relationships.length > 0
+          ) {
+            var neo4jLinkItmArray = dataItem.graph.relationships
+            neo4jLinkItmArray.forEach(function(linkItm) {
+              if (!(linkItm.id in linkItemMap)) {
+                linkItm.source = linkItm.startNode
+                linkItm.target = linkItm.endNode
+                linkItemMap[linkItm.id] = linkItm
+              }
+            })
+          }
+        })
+
+        console.log('nodeItemMap.size:' + Object.keys(nodeItemMap).length)
+        console.log('linkItemMap.size:' + Object.keys(linkItemMap).length)
+
+        updateGraph()
+        return
+      }
+
+      //also update graph when empty
+      updateGraph()
+      promptAlert($('#graphContainer'), 'No record found!', false)
+    },
+    'json'
+  )
+
+  jqxhr.fail(function(data) {
+    promptAlert(
+      $('#graphContainer'),
+      'Error: submitted query text but got error return (' + data + ')',
+      true
+    )
+  })
+}
+
+function modifyAsNode(neovar, val) {
+  var label = ''
+  var property = ''
+  if (val.substr(0, 3) == 'PMC') {
+    label = 'Paper'
+    property = 'PMCID'
+  } else if (val.substr(0, 4).toLowerCase() == 'acs:') {
+    val = val.substr(4).toUpperCase()
+    label = 'Accession'
+    property = 'Term'
+  } else {
+    label = 'Paper'
+    property = 'PMID'
+  }
+
+  var node =
+    '(' + neovar + ':' + label + '{' + property + ':' + "'" + val + "'" + '})'
+  return node
+}
+
+
+function stopSimulation() {
+  if (d3Simulation != null) {
+    d3Simulation.stop().on('tick', null)
+    d3Simulation = null
+  }
+}
+
+function save_as_json() {
   var blob = new Blob([neo_input_json], { type: 'text/plain;charset=utf-8' })
   saveAs(blob, 'graph.json')
 }
@@ -695,11 +859,11 @@ function save_as_svg() {
 
 function nodeColor(d, color) {
   var col = ''
-  if (current_id == null && d.properties.Term == currentAccessionID) {
+  if (currentID == null && d.properties.Term == currentAccessionID) {
     col = color
   } else if (
-    current_id !== null &&
-    (d.properties.PMCID == current_id || d.properties.PMID == current_id)
+    currentID !== null &&
+    (d.properties.PMCID == currentID || d.properties.PMID == currentID)
   ) {
     col = color
   } else {
@@ -710,11 +874,11 @@ function nodeColor(d, color) {
 
 function nodeColorBrighter(d, color) {
   var col = ''
-  if (current_id == null && d.properties.Term == currentAccessionID) {
+  if (currentID == null && d.properties.Term == currentAccessionID) {
     col = color
   } else if (
-    current_id !== null &&
-    (d.properties.PMCID == current_id || d.properties.PMID == current_id)
+    currentID !== null &&
+    (d.properties.PMCID == currentID || d.properties.PMID == currentID)
   ) {
     col = color
   } else {
@@ -736,6 +900,7 @@ function getColorBrighter(targetColor) {
     .toString()
 }
 
+
 //Page Init
 $(function() {
   setupNeo4jLoginForAjax(neo4jLogin, neo4jPassword)
@@ -751,11 +916,43 @@ $(function() {
   $('#btnSend').click(function() {
     submitQuery()
   })
+  $('#btnConnected').click(function() {
+    isItConnected()
+  })
 
   $('#save_as_json').click(save_as_json)
   $('#save_as_gml').click(save_as_gml)
   $('#save_as_xgmml').click(save_as_xgmml)
   $('#save_as_svg').click(save_as_svg)
+
+
+  $('#display_title').click(function(){
+    $(this).attr('class','dropdown-item active')
+    $('#display_id').attr('class','dropdown-item')
+    circleText.text(function(d){
+         if (d.labels[0] == 'Paper') {
+            var t = d.properties.Title.substr(0,5) + ".."
+          } else {
+            var t = d.properties.Term
+          }
+          return t.substr(0, 7)
+      })
+    updateGraph()
+  })
+
+  $('#display_id').click(function(){
+    $(this).attr('class','dropdown-item active')
+    $('#display_title').attr('class','dropdown-item')
+    circleText.text(function(d){
+         if (d.labels[0] == 'Paper') {
+            var t = d.properties.PMCID.substr(3) || d.properties.PMID
+          } else {
+            var t = d.properties.Term
+          }
+          return t.substr(0,7)
+       })
+    updateGraph()
+  })
 
   $('#chkboxCypherQry').change(function() {
     if (this.checked) $('#queryText').prop('placeholder', 'Cypher')
