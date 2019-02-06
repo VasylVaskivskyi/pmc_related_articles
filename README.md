@@ -1,7 +1,7 @@
 # Realted articles search tool for EuropePMC 
 This tool allows you to explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
 
-![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/d3js/viewport.JPG)
+![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/libraries/viewport.JPG)
 
 For all of these to work you need Neo4j server.\
 https://neo4j.com/download-center/#releases
