@@ -377,7 +377,7 @@ function submitQuery(nodeID) {
 
       if (queryStr.substr(0, 4).toLowerCase() == 'acs:') {
         queryStr =
-          'OPTIONAL MATCH zz=(:Paper)-[:ACCESSION]->' + queryStr + ' RETURN zz'
+          'OPTIONAL MATCH zz=(:Paper)-[:ACCESSION]->' + queryNode + ' RETURN zz'
       } else {
         queryStr =
           'OPTIONAL MATCH zz=' +
