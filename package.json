@@ -1,7 +1,7 @@
 {
   "name": "pmc_related_articles",
   "version": "1.0.0",
-  "description": "A database at Europe PMC to explore relationships between articles that have common accession numbers.",
+  "description": "A graph database to explore relationships between articles that have common accession numbers.",
   "main": "index.html",
   "scripts": {
     "test": "jest",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yucigou/pmc_related_articles.git"
+    "url": "git+https://github.com/VasylVaskivskyi/pmc_related_articles.git"
   },
   "keywords": [
     "article",
@@ -21,9 +21,9 @@
   "author": "Vasyl Vaskivskyi",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yucigou/pmc_related_articles/issues"
+    "url": "https://github.com/VasylVaskivskyi/pmc_related_articles/issues"
   },
-  "homepage": "https://github.com/yucigou/pmc_related_articles#readme",
+  "homepage": "https://github.com/VasylVaskivskyi/pmc_related_articles#readme",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
@@ -39,6 +39,10 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "file-saver": "^2.0.0"
+    "file-saver": "^2.0.0",
+	"d3":"^5.0.0",
+	"jquery":"^3.3.1",
+	"bootstrap":"^4.0.0"
+	
   }
 }
