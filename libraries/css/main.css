@@ -3,6 +3,22 @@ body {
 }
 
 
+
+#infoSearch{
+	z-index: 2;
+	position: relative;
+	cursor:pointer;
+	margin-left: 10px;
+	margin-right:-60px;
+}
+
+#infoConnected{
+	z-index: 2;
+	cursor:pointer;
+	position: relative;
+	left:45px;
+}
+
 #btnSend {
 	margin-left: 10px;
 }
@@ -17,9 +33,13 @@ body {
 	width: auto;
 	border: 1px solid #CCCCCC;
 }
+
 .col{
 	margin-left: 10px;
+	z-index: 1;
+	position: relative;
 }
+
 #graphContainer{
 	margin-left:-5px;
 }

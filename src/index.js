@@ -59,6 +59,12 @@ var zoom_handler = d3
   })
   .on('zoom', zoom_actions)
 
+$(function () {
+  $('[data-toggle="popover"]').popover({
+    container: 'body'
+  })
+})
+
 function unfreezeItms() {
   var nodeItmArray = d3Simulation.nodes()
   if (nodeItmArray != null) {
@@ -534,8 +540,8 @@ function isItConnected() {
   } else {
     nodeItemMap = {}
     linkItemMap = {}
-    var val1 = queryStr.split(',')[0]
-    var val2 = queryStr.split(',')[1]
+    var val1 = queryStr.split(',')[0].trim()
+    var val2 = queryStr.split(',')[1].trim()
     fromNode = modifyAsNode('p1', val1)
     toNode = modifyAsNode('p2', val2)
     queryStr =

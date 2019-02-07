@@ -19,62 +19,75 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-	  <div class="col">
-        <div class="col col-12 col-md-12 form-inline">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            size="40px"
-            id="queryText"
-            placeholder="PMCID, PMID or acs:Accession Number"
-          />
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            id="btnSend"
-          >
-            <i class="fa fa-check" aria-hidden="true"></i> Search&nbsp;
+        <div clss="col">
+          <button type="button" class="btn btn-sm btn-primary" id="infoSearch" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" title="Perfrom search" 
+             data-content="This search allows you find related items to the item of interest.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123)">
+            <i class="fa fa-question-circle"></i>
           </button>
-          &nbsp;
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="chkboxCypherQry"
-            value="1"
-          />
-          <label class="form-check-label" for="chkboxCypherQry"
-            >Use Cypher Query</label
-          >
         </div>
-		</div>
-		<div class="col">
-		<div class="col col-12 col-md-12 form-inline">
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            size="40px"
-            id="isItConnected"
-            placeholder="PMCID, PMID or acs:Accession Number"
-          />
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            id="btnConnected"
-          >
-            <i aria-hidden="true"></i>Is it connected?&nbsp;
-          </button>
-          &nbsp;
+        <div class="col">
+          <div class="col col-12 col-md-12 form-inline">
             <input
-            class="form-check-input"
-            type="checkbox"
-            id="chkboxConnected"
-            value="1"
-          />
-          <label class="form-check-label" for="chkboxConnected"
-            >New Search</label
-          >
-         </div>
-		</div> 
+              type="text"
+              class="form-control form-control-sm"
+              size="40px"
+              id="queryText"
+              placeholder="PMCID, PMID or acs:Accession Number"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm"
+              id="btnSend"
+            >
+              <i class="fa fa-check" aria-hidden="true"></i> Search&nbsp;
+            </button>
+            &nbsp;
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="chkboxCypherQry"
+              value="1"
+            />
+            <label class="form-check-label" for="chkboxCypherQry"
+              >Use Cypher Query</label
+            >
+          </div>
+        </div>
+         <div clss="col">
+          <button type="button" class="btn btn-sm btn-primary" type="button" id="infoConnected" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" title="Is it connected?" 
+              data-content="This search allows you to find out if the item of interest is connected to current graph.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123).<br>
+              Option 'New search' allows to find connection between TWO items that are specified in search field.<br>Input items separated by comma.<br>">
+            <i class="fa fa-question-circle"></i>
+          </button>
+        </div>
+        <div class="col">
+          <div class="col col-12 col-md-12 form-inline" id="connected-col">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              size="40px"
+              id="isItConnected"
+              placeholder="PMCID, PMID or acs:Accession Number"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm"
+              id="btnConnected"
+            >
+              <i aria-hidden="true"></i>Is it connected?&nbsp;
+            </button>
+            &nbsp;
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="chkboxConnected"
+              value="1"
+            />
+            <label class="form-check-label" for="chkboxConnected"
+              >New Search</label
+            >
+          </div>
+        </div>
       </div>
     </div>
     <hr />
@@ -130,7 +143,7 @@
                 aria-labelledby="dropdownMenuButton"
               >
                 <h6 class="dropdown-header">Text in nodes</h6>
-				        <a class="dropdown-item" id="display_id">ID</a>
+                <a class="dropdown-item" id="display_id">ID</a>
                 <a class="dropdown-item active" id="display_title">Title</a>
               </div>
             </div>
@@ -139,6 +152,7 @@
         </div>
       </div>
     </div>
+
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="libraries/js/jquery-3.3.1.min.js"></script>
