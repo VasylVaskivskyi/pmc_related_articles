@@ -1,5 +1,6 @@
 # Realted articles search tool for EuropePMC 
 This tool allows you to explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
+You can try it online on Google Cloud Platfrom http://35.246.2.161:9090/.
 
 ![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/libraries/viewport.JPG)
 
