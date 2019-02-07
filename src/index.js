@@ -661,7 +661,80 @@ function save_as_json() {
   saveAs(blob, 'graph.json')
 }
 
-function save_as_gml() {
+function save_as_gml_vos() {
+  var n_gml = ''
+  var e_gml = ''
+  var full_json = modified_json
+  var n_keys = Object.keys(full_json.nodes[0])
+  //var neo_json = JSON.parse(neo_input_json)
+  var e_keys = Object.keys(full_json.edges[0])
+  //console.log(n_keys);
+
+  n_keys.forEach(function(x) {
+    var key = x
+    var n = full_json.nodes[0][key]
+    var p_keys = Object.keys(n.properties)
+    var props = ''
+    var other_params = '\t  z 0.0\n\t  w 30.0\n\t  h 30.0\n\t  d 30.0\n'
+    p_keys.forEach(function(p) {
+      var ex_labs = ['p_ind', 'acs_ind', 'Title']
+      if (!ex_labs.includes(p)) {
+      props += '\t' + p + ' ' + '"' + n.properties[p] + '"' + '\n'
+      }
+    })
+      var title = n.properties.Title || n.properties.Term
+    n_gml +=
+      '  node\n  [\n' +
+      '\tid ' +
+      n.id +
+      '\n' +
+      '\tlabel "' +
+      title +
+      '"' +
+      '\n' +
+      '\ttype "' +
+      n.labels[0] +
+      '"' +
+      '\n' +
+      props +
+      '\t  x ' +
+      Number(n.x).toFixed(3) +
+      '\n' +
+      '\t  y ' +
+      Number(n.y).toFixed(3) +
+      '\n' +
+      other_params +
+      '  ]\n'
+  })
+
+  n_gml = 'graph\n[\n' + n_gml + '\n'
+
+  e_keys.forEach(function(x) {
+    var key = x
+    var e = full_json.edges[0][key]
+
+    e_gml +=
+      '  edge\n  [\n' +
+      '\tid ' +
+      e.id +
+      '\n' +
+      '\tsource ' +
+      e.source.id +
+      '\n' +
+      '\ttarget ' +
+      e.target.id +
+      '\n' +
+      '  ]\n'
+    console.log(e_gml)
+  })
+  e_gml = e_gml + '\n]'
+
+  var full_gml = n_gml + e_gml
+  var blob = new Blob([full_gml], { type: 'text/plain;charset=utf-8' })
+  saveAs(blob, 'graph.gml')
+}
+
+function save_as_gml_gephi() {
   var n_gml = ''
   var e_gml = ''
   var full_json = modified_json
@@ -927,7 +1000,8 @@ $(function() {
   })
 
   $('#save_as_json').click(save_as_json)
-  $('#save_as_gml').click(save_as_gml)
+  $('#save_as_gml_gephi').click(save_as_gml_gephi)
+  $('#save_as_gml_vos').click(save_as_gml_vos)
   $('#save_as_xgmml').click(save_as_xgmml)
   $('#save_as_svg').click(save_as_svg)
 
