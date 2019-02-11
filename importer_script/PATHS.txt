@@ -2,5 +2,5 @@
 
 neo4j home directory=C:/neo4j-enterprise/
 name fo your database=imp.db
-where to put downloaded files=C:/source/python_feeder/databases/db/
-path to output result csv=C:/source/python_feeder/neo/db
+where to put downloaded files=C:/source/python_feeder/databases/
+path to output result csv=C:/source/python_feeder/neo/

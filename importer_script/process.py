@@ -66,6 +66,7 @@ def processing(path_to_databases, path_to_output_csv):
     acs_nodes = nodes[["acs_ind:ID(Accession-ID)", "Term", "Database"]]
     acs_nodes.drop_duplicates(subset="acs_ind:ID(Accession-ID)", keep="first", inplace=True)
     acs_nodes["Term"] = acs_nodes["Term"].str.upper()
+    acs_nodes["Database"] = acs_nodes["Database"].str.lower()
     acs_nodes.reset_index(inplace=True, drop=True)
     acs_nodes[":LABEL"] = "Accession"
 
@@ -94,10 +95,7 @@ def processing(path_to_databases, path_to_output_csv):
         progress(i, 500, "getting titles")
         i += 1
 
-    total_meta_table["title"] = total_meta_table["title"].str.replace(",", "")
-    total_meta_table["title"] = total_meta_table["title"].str.replace(";", "")
-    total_meta_table["title"] = total_meta_table["title"].str.replace("\"", "")
-    total_meta_table["title"] = total_meta_table["title"].str.replace("\n", "")
+    total_meta_table["title"] = total_meta_table["title"].str.replace(",|;|\"|\n|\r", "")
     total_meta_table["title"] = total_meta_table["title"].str.strip(",.\n\r")
     total_meta_table.columns = ["Title", "PMCID"]
 
@@ -126,18 +124,14 @@ def processing(path_to_databases, path_to_output_csv):
                 nodes_w_title.loc[t, "Title"] = "No title found"
             elif "title" in data[0]:
                 title = data[0]["title"]
-                title = title.replace(";", "")
-                title = title.replace(",", "")
-                title = title.replace("\n", "")
+                title = title.replace(",|;|\"|\n|\r", "")
                 title = title.strip(".,\n\r", )
                 nodes_w_title.loc[t, "Title"] = title
             elif data[0]["pubType"] == "admin":
                 nodes_w_title.loc[t, "Title"] = "No title found"
             else:
                 title = data[0].get("pubType", "No title found")
-                title = title.replace(";", "-")
-                title = title.replace(",", "")
-                title = title.replace("\n", "")
+                title = title.replace(",|;|\"|\n|\r", "")
                 title = title.strip(".,\n\r", )
                 nodes_w_title.loc[t, "Title"] = title
 
