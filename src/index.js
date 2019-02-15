@@ -1,14 +1,15 @@
 'use strict'
-
-import { saveAs } from '../libraries/js/FileSaver.min.js'
-//var { saveAs } = require('file-saver')
+//icons http://svgicons.sparkk.fr/
+//import { saveAs } from '../libraries/js/FileSaver.min.js'
+var { saveAs } = require('file-saver')
 
 //######################### const #########################
-var w = window.innerWidth
-|| document.documentElement.clientWidth
-|| document.body.clientWidth
+var w =
+  window.innerWidth ||
+  document.documentElement.clientWidth ||
+  document.body.clientWidth
 
-var graphWidth = w - Math.floor(w/3)
+var graphWidth = 1280
 var graphHeight = 650
 var arrowHeight = 5
 var arrowWidth = 5
@@ -24,9 +25,22 @@ var textPosOffsetY = 5
 var collideForceSize = circleSize + 5
 var linkForceSize = 150
 
+var iconPosOffset = { lock: [23, -33], info: [23, -10], cross: [23, 13] }
+var lockIconSVG =
+  'm18,8l-1,0l0,-2c0,-2.76 -3.28865,-5.03754 -5,-5c-1.71135,0.03754 -5.12064,0.07507 -5,4l1.9,0c0,-1.71 1.39,-2.1 3.1,-2.1c1.71,0 3.1,1.39 3.1,3.1l0,2l-9.1,0c-1.1,0 -2,0.9 -2,2l0,10c0,1.1 0.9,2 2,2l12,0c1.1,0 2,-0.9 2,-2l0,-10c0,-1.1 -0.9,-2 -2,-2zm0,12l-12,0l0,-10l12,0l0,10z'
+var crossIconSVG =
+  'M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'
+var infoIconSVG =
+  'M16.469,8.924l-2.414,2.413c-0.156,0.156-0.408,0.156-0.564,0c-0.156-0.155-0.156-0.408,0-0.563l2.414-2.414c1.175-1.175,1.175-3.087,0-4.262c-0.57-0.569-1.326-0.883-2.132-0.883s-1.562,0.313-2.132,0.883L9.227,6.511c-1.175,1.175-1.175,3.087,0,4.263c0.288,0.288,0.624,0.511,0.997,0.662c0.204,0.083,0.303,0.315,0.22,0.52c-0.171,0.422-0.643,0.17-0.52,0.22c-0.473-0.191-0.898-0.474-1.262-0.838c-1.487-1.485-1.487-3.904,0-5.391l2.414-2.413c0.72-0.72,1.678-1.117,2.696-1.117s1.976,0.396,2.696,1.117C17.955,5.02,17.955,7.438,16.469,8.924 M10.076,7.825c-0.205-0.083-0.437,0.016-0.52,0.22c-0.083,0.205,0.016,0.437,0.22,0.52c0.374,0.151,0.709,0.374,0.997,0.662c1.176,1.176,1.176,3.088,0,4.263l-2.414,2.413c-0.569,0.569-1.326,0.883-2.131,0.883s-1.562-0.313-2.132-0.883c-1.175-1.175-1.175-3.087,0-4.262L6.51,9.227c0.156-0.155,0.156-0.408,0-0.564c-0.156-0.156-0.408-0.156-0.564,0l-2.414,2.414c-1.487,1.485-1.487,3.904,0,5.391c0.72,0.72,1.678,1.116,2.696,1.116s1.976-0.396,2.696-1.116l2.414-2.413c1.487-1.486,1.487-3.905,0-5.392C10.974,8.298,10.55,8.017,10.076,7.825'
+var boxSVG = 'M0 0 L23 0 L23 23 L0 23 Z'
+
 //######################### variable #########################
 var nodeItemMap = {}
 var linkItemMap = {}
+
+var iconLock
+var iconCross
+var iconInfo
 
 var nodes = []
 var edges = []
@@ -58,12 +72,6 @@ var zoom_handler = d3
     return (d3.event.type == 'wheel') | (d3.event.type == 'mousedown')
   })
   .on('zoom', zoom_actions)
-
-$(function () {
-  $('[data-toggle="popover"]').popover({
-    container: 'body'
-  })
-})
 
 function unfreezeItms() {
   var nodeItmArray = d3Simulation.nodes()
@@ -110,20 +118,6 @@ function initGraph() {
 
   svg.attr('width', graphWidth).attr('height', graphHeight)
 
-  /*
-    var defs = svg.append('defs');
-    Not use marker as IE does not support it and so embed the arrow in the path directly
-    // define arrow markers for graph links
-    defs.append('marker')
-      .attr('id', 'end-arrow')
-      .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 10)
-      .attr('markerWidth', 5)
-      .attr('markerHeight', 5)
-      .attr('orient', 'auto')
-      .append('path')
-      .attr('d', 'M0,-5L10,0L0,5');
-    */
   zoomGLayer
     .append('g')
     .attr('id', 'path-group')
@@ -140,6 +134,10 @@ function initGraph() {
     .append('g')
     .attr('id', 'text-group')
     .attr('transform', 'translate(' + centerX + ',' + centerY + ')')
+  zoomGLayer
+    .append('g')
+    .attr('id', 'control-icon-group')
+    .attr('transform', 'translate(' + centerX + ',' + centerY + ')')
 
   zoom_handler(svg)
 }
@@ -150,6 +148,15 @@ function tick() {
   //lineText.attr('transform', transformPathLabel);
   circles.attr('transform', transform)
   circleText.attr('transform', transform)
+  iconLock.attr('transform', function(d) {
+    return transformIcon(d, 'lock')
+  })
+  iconCross.attr('transform', function(d) {
+    return transformIcon(d, 'cross')
+  })
+  iconInfo.attr('transform', function(d) {
+    return transformIcon(d, 'info')
+  })
 }
 
 function transformPathLabel(d) {
@@ -160,6 +167,12 @@ function transformPathLabel(d) {
 
 function transform(d) {
   return 'translate(' + d.x + ',' + d.y + ')'
+}
+
+function transformIcon(d, type) {
+  var sourceX = d.x + iconPosOffset[type][0]
+  var sourceY = d.y + iconPosOffset[type][1]
+  return 'translate(' + sourceX + ',' + sourceY + ')'
 }
 
 function drawLine(d) {
@@ -218,33 +231,75 @@ function drawLine(d) {
 }
 
 function clearProperties() {
-  $('#propertiesBox').empty()
+  $('#propertiesBox > #props').empty()
+  $('#propertiesBox > table').empty()
 }
 
 function showProperties(d) {
+
   clearProperties()
+
   var propertiesText = ''
   var link = ''
   var ex_labs = ['p_ind', 'acs_ind']
-  //var propertiesText = 'id: ' + d.id;
-  //For nodes
-  //if (d.labels != null)
-  //propertiesText += ', labels: ' + d.labels.join(', ');
-  //For links
-  //if (d.type != null)
-  //  propertiesText += ', type: ' + d.type;
+  var name = ''
+
+  //NODE PROPERTIES
 
   $.map(d.properties, function(value, key) {
     if (!ex_labs.includes(key)) {
       propertiesText += key + ': ' + value + '<br/><br/>'
     }
   })
+
+  //TABLE
+
+  $('#table_div').append(
+    "<thead><th colspan='3'>Connected to</th></thead><tbody></tbody>"
+  )
+  $.map(linkItemMap, function(value, key) {
+    if (value.startNode == d.id) {
+      name = value.target.labels[0] + ' number'
+      $('#table_div > tbody').append(
+        '<tr>' +
+          '<td>' +
+          name +
+          '</td>' +
+          "<td id='acc'>" +
+          value.target.properties.Term +
+          '</td>' +
+          '</tr>'
+      )
+    }
+    if (value.endNode == d.id) {
+      name = value.source.labels[0]
+      $('#table_div > tbody').append(
+        '<tr>' +
+          '<td>' +
+          name +
+          '</td>' +
+          '<td>' +
+          value.source.properties.Title +
+          '</td>' +
+          "<td id='PMCID'>" +
+          value.source.properties.PMCID +
+          '</td>' +
+          '</tr>'
+      )
+    }
+  })
+
+  propertiesTable(d)
+
+  //LINKS
+
   if (Object.keys(d.properties).includes('PMCID')) {
     link = 'https://europepmc.org/abstract/PMC/' + d.properties.PMCID
   } else if (!Object.keys(d.properties).includes('PMCID')) {
     link = 'https://europepmc.org/abstract/MED/' + d.properties.PMID
   }
-  $('#propertiesBox').append($('<p></p>').html(propertiesText))
+
+  $('#propertiesBox > #props').append($('<p></p>').html(propertiesText))
   $('#open_article').attr('href', link)
 }
 
@@ -292,38 +347,67 @@ function updateGraph() {
       return d.id
     })
   /*  lineText = d3.select('#path-label-group').selectAll('text')
-        .data(d3LinkForce.links(), function(d) {return d.id;});
-*/
+        .data(d3LinkForce.links(), function(d) {return d.id;});*/
 
+  /* ICONS */
+  iconLock = d3
+    .select('#control-icon-group')
+    .selectAll('g.lockIcon')
+    .data([], function(d) {
+      return d.id
+    })
+  iconCross = d3
+    .select('#control-icon-group')
+    .selectAll('g.crossIcon')
+    .data([], function(d) {
+      return d.id
+    })
+  iconInfo = d3
+    .select('#control-icon-group')
+    .selectAll('g.infoIcon')
+    .data([], function(d) {
+      return d.id
+    })
+
+  iconLock.exit().remove()
+  iconCross.exit().remove()
+  iconInfo.exit().remove()
+
+  /* NODES AND LINKS */
   circles.exit().remove()
   circles = circles
     .enter()
     .append('circle')
     .attr('r', circleSize)
-    .attr('fill', function(d) {
-      return nodeColor(d, '#1E90FF')
-    })
+    .attr('fill', function(d) { 
+            return nodeColor(d, '#1E90FF')
+        })
     .attr('stroke', 'black')
     .call(drag_handler)
     .on('mouseover', function(d) {
       d3.select(this)
         .attr('fill', function(d) {
-          return nodeColorBrighter(d, '#AFEEEE')
-        })
+          return nodeColorBrighter(d, '#AFEEEE')      
+           })
         .attr('stroke', 'gray')
       showProperties(d)
     })
     .on('mouseout', function(d) {
       d3.select(this)
         .attr('fill', function(d) {
-          return nodeColor(d, '#1E90FF')
-        })
+            return nodeColor(d, '#1E90FF')
+          })
+
         .attr('stroke', 'black')
     })
     .on('dblclick', function(d) {
       d.fx = d.x
       d.fy = d.y
       submitQuery(d.id)
+    })
+    .on('click', function(d) {
+      
+      nodeMenu(d)
     })
     .merge(circles)
 
@@ -334,14 +418,15 @@ function updateGraph() {
     .attr('y', textPosOffsetY)
     .attr('text-anchor', 'middle')
     .text(function(d) {
-        if (d.labels[0] == 'Paper') {
-            var t = d.properties.Title
-          } else {
-            var t = d.properties.Term
-          }
-          return t.substr(0, 7)
-      })
+      if (d.labels[0] == 'Paper') {
+        var t = d.properties.Title
+      } else {
+        var t = d.properties.Term
+      }
+      return t.substr(0, 7)
+    })
     .merge(circleText)
+
 
   lines.exit().remove()
   lines = lines
@@ -648,6 +733,88 @@ function modifyAsNode(neovar, val) {
   return node
 }
 
+function removeNode(d) {
+  delete nodeItemMap[d.id]
+  $.map(linkItemMap, function(value, key) {
+    if (value.startNode == d.id || value.endNode == d.id)
+      delete linkItemMap[key]
+  })
+  $('#context').css('display', 'none')
+  updateGraph()
+}
+
+
+function propertiesTable(d) {
+  var propertiesNode = d.id
+  var selectedrow = null
+  var lineselection = null
+
+  $('#table_div > tbody > tr').on('mouseover', function() {
+    var selector = null
+    var selection = null
+    var tpaper =
+      $(this)
+        .children('#PMCID')
+        .text() || null
+    var tacc =
+      $(this)
+        .children('#acc')
+        .text() || null
+
+    if (tpaper != null) {
+      selector = 'PMCID'
+      selection = tpaper
+    } else if (tacc != null) {
+      selector = 'Term'
+      selection = tacc
+    }
+
+    d3.select('#circle-group')
+      .selectAll('circle')
+      .filter(function(d) {
+        if (d.properties[selector] == selection) {
+          selectedrow = d.id
+          d3.select(this).attr('fill', '#fcc200')
+        }
+      })
+
+    d3.select('#path-group')
+      .selectAll('path')
+      .filter(function(d) {
+        if (
+          (d.source.id == selectedrow && d.target.id == propertiesNode) ||
+          (d.source.id == propertiesNode && d.target.id == selectedrow)
+        ) {
+          lineselection = d.index
+          d3.select(this)
+            .style('stroke', '#fcc200')
+            .style('stroke-width', '3px')
+        }
+      })
+  })
+
+  $('#table_div > tbody > tr').on('mouseout', function() {
+    d3.select('#circle-group')
+      .selectAll('circle')
+      .filter(function(d) {
+        if (d.id == selectedrow) {
+          d3.select(this).attr('fill', function(d) {
+            return nodeColor(d, '#1E90FF')
+          })
+        }
+      })
+
+    d3.select('#path-group')
+      .selectAll('path')
+      .filter(function(d) {
+        if (d.index == lineselection) {
+          d3.select(this)
+            .style('stroke', 'DimGrey')
+            .style('stroke-width', '1.5px')
+        }
+      })
+  })
+}
 
 function stopSimulation() {
   if (d3Simulation != null) {
@@ -679,10 +846,10 @@ function save_as_gml_vos() {
     p_keys.forEach(function(p) {
       var ex_labs = ['p_ind', 'acs_ind', 'Title']
       if (!ex_labs.includes(p)) {
-      props += '\t' + p + ' ' + '"' + n.properties[p] + '"' + '\n'
+        props += '\t' + p + ' ' + '"' + n.properties[p] + '"' + '\n'
       }
     })
-      var title = n.properties.Title || n.properties.Term
+    var title = n.properties.Title || n.properties.Term
     n_gml +=
       '  node\n  [\n' +
       '\tid ' +
@@ -979,6 +1146,108 @@ function getColorBrighter(targetColor) {
     .toString()
 }
 
+function nodeMenu(d) {
+
+  iconLock = d3
+    .select('#control-icon-group')
+    .selectAll('g.lockIcon')
+    .data([d], function(d) {
+      return d.id
+    })
+  iconCross = d3
+    .select('#control-icon-group')
+    .selectAll('g.crossIcon')
+    .data([d], function(d) {
+      return d.id
+    })
+  iconInfo = d3
+    .select('#control-icon-group')
+    .selectAll('g.infoIcon')
+    .data([d], function(d) {
+      return d.id
+    })
+
+  iconLock.exit().remove()
+  iconLock.remove()
+  iconCross.exit().remove()
+  iconCross.remove()
+  iconInfo.exit().remove()
+  iconInfo.remove()
+
+  var iconLockEnter = iconLock
+    .enter()
+    .append('g')
+    .attr('class', 'lockIcon')
+    .attr('transform', function(d) {
+      return transformIcon(d, 'lock')
+    })
+    .on('click', function(d) {
+      d.fx = null
+      d.fy = null
+
+      iconLock.remove()
+      iconCross.remove()
+      iconInfo.remove()   
+    })
+
+  var iconCrossEnter = iconCross
+    .enter()
+    .append('g')
+    .attr('class', 'crossIcon')
+    .attr('transform', function(d) {
+      return transformIcon(d, 'cross')
+    })
+    .on('click', function(d) {
+      removeNode(d)
+      updateGraph()
+    })
+
+  var iconInfoEnter = iconInfo
+    .enter()
+    .append('g')
+    .attr('class', 'infoIcon')
+    .attr('transform', function(d) {
+      return transformIcon(d, 'info')
+    })
+    .on('click', function(d) {
+      var link = ''
+      if (Object.keys(d.properties).includes('PMCID')) {
+        link = 'https://europepmc.org/abstract/PMC/' + d.properties.PMCID
+      } else if (!Object.keys(d.properties).includes('PMCID')) {
+        link = 'https://europepmc.org/abstract/MED/' + d.properties.PMID
+      }
+      window.open(link)
+      iconLock.remove()
+      iconCross.remove()
+      iconInfo.remove()
+    })
+
+  iconLockEnter
+    .append('path')
+    .attr('class', 'overlay')
+    .attr('d', boxSVG)
+  iconLockEnter.append('path').attr('d', lockIconSVG)
+  iconCrossEnter
+    .append('path')
+    .attr('class', 'overlay')
+    .attr('d', boxSVG)
+  iconCrossEnter.append('path').attr('d', crossIconSVG)
+  iconInfoEnter
+    .append('path')
+    .attr('class', 'overlay')
+    .attr('d', boxSVG)
+  iconInfoEnter.append('path').attr('d', infoIconSVG)
+
+  iconLock = iconLockEnter.merge(iconLock)
+  iconCross = iconCrossEnter.merge(iconCross)
+  iconInfo = iconInfoEnter.merge(iconInfo)
+}
+
+$(function() {
+  $('[data-toggle="popover"]').popover({
+    container: 'body',
+  })
+})
 
 //Page Init
 $(function() {
@@ -1005,32 +1274,31 @@ $(function() {
   $('#save_as_xgmml').click(save_as_xgmml)
   $('#save_as_svg').click(save_as_svg)
 
-
-  $('#display_title').click(function(){
-    $(this).attr('class','dropdown-item active')
-    $('#display_id').attr('class','dropdown-item')
-    circleText.text(function(d){
-         if (d.labels[0] == 'Paper') {
-            var t = d.properties.Title.substr(0,5) + ".."
-          } else {
-            var t = d.properties.Term
-          }
-          return t.substr(0, 7)
-      })
+  $('#display_title').click(function() {
+    $(this).attr('class', 'dropdown-item active')
+    $('#display_id').attr('class', 'dropdown-item')
+    circleText.text(function(d) {
+      if (d.labels[0] == 'Paper') {
+        var t = d.properties.Title.substr(0, 5) + '..'
+      } else {
+        var t = d.properties.Term
+      }
+      return t.substr(0, 7)
+    })
     updateGraph()
   })
 
-  $('#display_id').click(function(){
-    $(this).attr('class','dropdown-item active')
-    $('#display_title').attr('class','dropdown-item')
-    circleText.text(function(d){
-         if (d.labels[0] == 'Paper') {
-            var t = d.properties.PMCID.substr(3) || d.properties.PMID
-          } else {
-            var t = d.properties.Term
-          }
-          return t.substr(0,7)
-       })
+  $('#display_id').click(function() {
+    $(this).attr('class', 'dropdown-item active')
+    $('#display_title').attr('class', 'dropdown-item')
+    circleText.text(function(d) {
+      if (d.labels[0] == 'Paper') {
+        var t = d.properties.PMCID.substr(3) || d.properties.PMID
+      } else {
+        var t = d.properties.Term
+      }
+      return t.substr(0, 7)
+    })
     updateGraph()
   })
 

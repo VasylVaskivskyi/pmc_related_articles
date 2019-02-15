@@ -20,8 +20,17 @@
     <div class="container-fluid">
       <div class="row">
         <div clss="col">
-          <button type="button" class="btn btn-sm btn-primary" id="infoSearch" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" title="Perfrom search" 
-             data-content="This search allows you find related items to the item of interest.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123)">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            id="infoSearch"
+            data-trigger="hover"
+            data-toggle="popover"
+            data-placement="bottom"
+            data-html="true"
+            title="Perfrom search"
+            data-content="This search allows you find related items to the item of interest.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123)"
+          >
             <i class="fa fa-question-circle"></i>
           </button>
         </div>
@@ -53,10 +62,20 @@
             >
           </div>
         </div>
-         <div clss="col">
-          <button type="button" class="btn btn-sm btn-primary" type="button" id="infoConnected" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" title="Is it connected?" 
-              data-content="This search allows you to find out if the item of interest is connected to current graph.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123).<br>
-              Option 'New search' allows to find connection between TWO items that are specified in search field.<br>Input items separated by comma.<br>">
+        <div clss="col">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            type="button"
+            id="infoConnected"
+            data-trigger="hover"
+            data-toggle="popover"
+            data-placement="bottom"
+            data-html="true"
+            title="Is it connected?"
+            data-content="This search allows you to find out if the item of interest is connected to current graph.<br> Input PMCID, PMID or accession number with prefix acs: (e.g. acs:ABD52123).<br>
+              Option 'New search' allows to find connection between TWO items that are specified in search field.<br>Input items separated by comma.<br>"
+          >
             <i class="fa fa-question-circle"></i>
           </button>
         </div>
@@ -149,11 +168,14 @@
               </div>
             </div>
           </div>
-          <div id="propertiesBox"></div>
+          <div id="propertiesBox">
+            <div id="props"></div>
+            <p></p>
+            <table class="table table-sm table-striped table-hover" id="table_div"></table>
+          </div>
         </div>
       </div>
     </div>
-
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="libraries/js/jquery-3.3.1.min.js"></script>

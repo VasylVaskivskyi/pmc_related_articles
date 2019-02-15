@@ -1,7 +1,8 @@
+/*$primary:#284570;*/
+
 body {
 	padding-top: 15px;
 }
-
 
 
 #infoSearch{
@@ -29,9 +30,12 @@ body {
 
 #propertiesBox {
 	overflow: auto;
+	padding-left: 10px;
 	height: 612px;
 	width: auto;
+	background:white;
 	border: 1px solid #CCCCCC;
+	z-index: 3;
 }
 
 .col{
@@ -42,6 +46,7 @@ body {
 
 #graphContainer{
 	margin-left:-5px;
+	z-index: 0;
 }
 
 .dropdown-item {
@@ -53,6 +58,7 @@ body {
 }
 
 
+/* node and link style */ 
 svg {
 	border: 1px dashed #CCCCCC;
 }
@@ -65,9 +71,46 @@ circle {
 text {
 	font: 10px arial;
 	pointer-events: none;
+
 }
 
 path {
 	stroke: DimGrey;
 	stroke-width: 1.5px;
+}
+
+
+
+/* context menu */
+#control-icon-group {
+	cursor: pointer;
+}
+
+g.lockIcon path {
+	stroke: white;
+	fill:white;
+	stroke-width: 1.5px;
+}
+
+g.infoIcon path {
+	stroke: white;
+	fill:white;
+	stroke-width: 1.5px;
+}
+
+g.crossIcon path {
+	stroke: white;
+	fill: white;
+	stroke-width: 1.5px;
+}
+
+g path.overlay {
+	fill: #007bff;
+	stroke: white;
+	stroke-width: 1px;
+	
+}
+
+.table-hover tbody tr:hover td {
+    background: #fcc200;
 }
