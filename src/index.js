@@ -1302,6 +1302,18 @@ $(function() {
     updateGraph()
   })
 
+  $('#display_legend').click(function() {
+    if ($(this).attr('class') == 'dropdown-item'){
+      $('#legend').css('display','block')
+      $(this).attr('class','dropdown-item active')
+    }else{
+      $('#legend').css('display','none')
+      $(this).attr('class','dropdown-item')
+    }
+      
+  })
+
+
   $('#chkboxCypherQry').change(function() {
     if (this.checked) $('#queryText').prop('placeholder', 'Cypher')
     else

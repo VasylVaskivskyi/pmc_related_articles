@@ -81,7 +81,7 @@ path {
 
 
 
-/* context menu */
+/* node menu */
 #control-icon-group {
 	cursor: pointer;
 }
@@ -114,3 +114,31 @@ g path.overlay {
 .table-hover tbody tr:hover td {
     background: #fcc200;
 }
+
+
+/* legend */
+
+#legend{
+	display: block;
+	position: relative;
+	font-size: 12px;
+	width:120px;
+	left:1150px;
+	top:-655px;
+	pointer-events: none;
+}
+
+
+.key-dot {
+    display: block;
+    height: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+    width: 10px;
+    border:1px solid black;
+
+}
+
+.green { background: #66c2a5;}
+.yellow { background: #fc8d62;}
+.blue { background: #1e90ff;}

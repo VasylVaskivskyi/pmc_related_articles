@@ -17,6 +17,7 @@
   </head>
 
   <body>
+
     <div class="container-fluid">
       <div class="row">
         <div clss="col">
@@ -114,6 +115,13 @@
       <div class="row no-gutters">
         <div class="col" id="graphContainer">
           <svg id="resultSvg"></svg>
+              <table class="table table-sm table-borderless" id="legend">
+              <th>Legend</th>
+               <tr><td>Paper</td><td><span class="key-dot green"></span></td></tr>
+               <tr><td>Accession No.</td><td><span class="key-dot yellow"></span></td></tr>
+               <tr><td>Queried item</td><td><span class="key-dot blue"></span></td></tr>
+             </table>
+
         </div>
         <div class="col">
           <div class="btn-group">
@@ -165,6 +173,8 @@
                 <h6 class="dropdown-header">Text in nodes</h6>
                 <a class="dropdown-item" id="display_id">ID</a>
                 <a class="dropdown-item active" id="display_title">Title</a>
+                <h6 class="dropdown-header">Toggle legend</h6>
+                <a class="dropdown-item active" id="display_legend">Display legend</a>
               </div>
             </div>
           </div>
