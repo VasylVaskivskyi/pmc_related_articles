@@ -87,35 +87,41 @@ path {
 }
 
 g.lockIcon path {
-	stroke: white;
-	fill:white;
+	transform: scale(0.9);
+	stroke: #fcc200;
+	fill:#fcc200;
 	stroke-width: 1.5px;
 }
 
 g.infoIcon path {
-	stroke: white;
-	fill:white;
+	transform: scale(0.9);
+	stroke: #fcc200;
+	fill:#fcc200;
 	stroke-width: 1.5px;
 }
 
 g.crossIcon path {
-	stroke: white;
-	fill: white;
+	transform: scale(0.9);
+	stroke: #fcc200;
+	fill: #fcc200;
+	stroke-width: 1.5px;
+}
+
+g.descIcon path {
+	transform: scale(0.9);
+	stroke: #fcc200;
+	fill: #fcc200;
 	stroke-width: 1.5px;
 }
 
 g path.overlay {
-	fill: #007bff;
-	stroke: white;
-	stroke-width: 1px;
-	
+	fill: white;
+	stroke: none;
 }
 
 .table-hover tbody tr:hover td {
     background: #fcc200;
 }
-
-
 /* legend */
 
 #legend{
