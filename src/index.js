@@ -9,8 +9,18 @@ var w =
   document.documentElement.clientWidth ||
   document.body.clientWidth
 
-var graphWidth = 1280
-var graphHeight = 650
+var h =
+  window.innerHeight ||
+  document.documentElement.clientHeight ||
+  document.body.clientHeight
+
+var graphWidth = w - Math.floor(w/4)
+var graphHeight = h*0.8
+$('#propertiesBox').css('height',graphHeight)
+$('#legend').css('left', graphWidth-120 + 'px')
+//$('#functional-buttons').css('left', graphWidth + 'px')
+
+
 var arrowHeight = 5
 var arrowWidth = 5
 
@@ -63,6 +73,9 @@ var currentAccessionID = null
 
 var itemColorMap = {}
 var colorScale = d3.scaleOrdinal(d3.schemeSet2)
+
+
+
 
 var drag_handler = d3
   .drag()

@@ -13,35 +13,47 @@ body {
 	margin-right:-60px;
 }
 
-#infoConnected{
-	z-index: 2;
-	cursor:pointer;
-	position: relative;
-	left:45px;
-}
 
 #btnSend {
 	margin-left: 10px;
 }
 
-#btnConnected {
-	margin-left: 10px;
+#functional-buttons{
+	position: absolute;
+	right:0vw;
+
 }
 
+
+.dropdown-item {
+	position: relative;
+	cursor: pointer;
+
+}
+.dropdown-item:active,
+.dropdown-item.active {
+  color: white !important;
+
+}
+
+
+
+
 #propertiesBox {
+	position: relative;
 	overflow: auto;
 	padding-left: 10px;
-	height: 612px;
+	height: 650px;
 	width: auto;
 	background:white;
 	border: 1px solid #CCCCCC;
-	z-index: 3;
+	z-index:0;
+
 }
 
 .col{
-	margin-left: 10px;
-	z-index: 1;
 	position: relative;
+	margin-left: 10px;
 }
 
 #graphContainer{
@@ -49,13 +61,6 @@ body {
 	z-index: 0;
 }
 
-.dropdown-item {
-	cursor: pointer;
-}
-.dropdown-item:active,
-.dropdown-item.active {
-  color: white !important;
-}
 
 
 /* node and link style */ 
@@ -126,11 +131,11 @@ g path.overlay {
 
 #legend{
 	display: block;
-	position: relative;
+	position: absolute;
 	font-size: 12px;
 	width:120px;
-	left:1150px;
-	top:-655px;
+	right:0%;
+	top:0%;
 	pointer-events: none;
 }
 
