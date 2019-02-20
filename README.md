@@ -2,6 +2,9 @@
 This tool allows you to explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
 You can try it online on Google Cloud Platfrom http://35.246.2.161:9090/.
 
+Webpack is currently disabled.
+
+
 ![alt text](https://raw.githubusercontent.com/VasylVaskivskyi/pmc_related_articles/master/libraries/viewport.JPG)
 
 For all of these to work you need Neo4j server.\
@@ -41,6 +44,43 @@ Because of current limitatins of **admin-import tool** If you want to run script
 
 Just put it in NEO4J_home_folder/data/databases.
 
-Sample IDs to put in query: PMC6299211, 30510815, PMC6218573, 30425980, 30425978 
+
+**Sample IDs to put in query: PMC6299211, 30510815, PMC6218573, 30425980, 30425978**
+
+How to use search 
+
+**Target specific search**
+*Input*
+PMCID or PMID
+*Return*
+A graph of accession numbers that article of interest has and other articles that are connected to these accession numbers
+*Input* 
+One accession number (with prefix 'acc:') **acc:4H6B**
+A list of accession numbers: **acc[4H6B,5BU3]**
+*Return*
+A graph of articles that have these accession numbers
+*Input* 
+One accession number and target databases: acc:4H6B AND db[pdb,ena]
+Multiple accession numbers and target databases: acc[4H6B,5BU3] AND db[pdb,ena]
+*Return*
+A graph of accession numbers and articles that have accession numbers from specified databases
+
+	  
+**Check if two items of interest are somehow connected**
+*Input*
+Paper and paper (PMCID or PMID): **con(30425980, PMC6218573)**
+Paper and accession number: **con(30425980, acc:3MWD)**
+Accession number and accession number: **con(acc:3C4E acc:3MWD)**
+*Return*
+A graph which shows a connection between two items up to 15 jumps
+
+**Free text search**
+*Input*
+Text specifying boolean AND/OR connection, with '@' sign on the beginnig: **@beta-catenin OR β-catenin**
+With limit for number of papers to retrieve: **@beta-catenin OR β-catenin @ LIMIT 1000**
+
+
+
+
 
 Visualization script is modified version of tool made by  [@micwan88](https://github.com/micwan88/d3js-neo4j-example). 
