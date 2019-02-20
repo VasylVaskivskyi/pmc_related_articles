@@ -14,8 +14,8 @@ var h =
   document.documentElement.clientHeight ||
   document.body.clientHeight
 
-var graphWidth = w - Math.floor(w/4)
-var graphHeight = h*0.8
+var graphWidth = w*0.7
+var graphHeight = h*0.85
 $('#propertiesBox').css('height',graphHeight)
 $('#legend').css('left', graphWidth-120 + 'px')
 //$('#functional-buttons').css('left', graphWidth + 'px')
@@ -74,9 +74,6 @@ var currentAccessionID = null
 var itemColorMap = {}
 var colorScale = d3.scaleOrdinal(d3.schemeSet2)
 
-
-
-
 var drag_handler = d3
   .drag()
   .on('start', drag_start)
@@ -90,6 +87,7 @@ var zoom_handler = d3
     return (d3.event.type == 'wheel') | (d3.event.type == 'mousedown')
   })
   .on('zoom', zoom_actions)
+
 
 function unfreezeItms() {
   var nodeItmArray = d3Simulation.nodes()
@@ -278,39 +276,32 @@ function showProperties(d) {
   })
 
   //TABLE
+  //Headers are inverted
+  $('#table_div').append('<caption>Connected to</caption>')
+  
+  if('Term' in d.properties){
+    $('#table_div').append('<thead><th>Paper title</th><th>Paper ID</th></thead><tbody></tbody>')  
+  }
+  if('PMCID' in d.properties  || 'PMID' in d.properties){
+    $('#table_div').append('<thead><th>Database</th><th>Accession number</th></thead><tbody></tbody>') 
+  }
 
-  $('#table_div').append("<thead><th colspan='3'>Connected to</th></thead><tbody></tbody>" )
   $.map(linkItemMap, function(value, key) {
     if (value.startNode == d.id) {
-      name = value.target.labels[0] + ' number'
       $('#table_div > tbody').append(
         '<tr>' +
-          '<td>' +
-          name +
-          '</td>' +
-          '<td>' +
-          value.target.properties.Database +
-          '</td>' +
-          '<td id="acc">' +
-          value.target.properties.Term +
-          '</td>' +
-          '</tr>'
+          '<td>' + value.target.properties.Database + '</td>' + 
+          '<td id="acc">' + value.target.properties.Term + '</td>' + 
+        '</tr>'
       )
     }
     if (value.endNode == d.id) {
       name = value.source.labels[0]
       $('#table_div > tbody').append(
         '<tr>' +
-          '<td>' +
-          name +
-          '</td>' +
-          '<td>' +
-          value.source.properties.Title +
-          '</td>' +
-          '<td id="PMCID">' +
-          value.source.properties.PMCID +
-          '</td>' +
-          '</tr>'
+          '<td>' + value.source.properties.Title + '</td>' +
+          '<td id="PMCID">' + value.source.properties.PMCID + '</td>' +
+        '</tr>'
       )
     }
   })
@@ -375,7 +366,7 @@ function updateGraph() {
   /*  lineText = d3.select('#path-label-group').selectAll('text')
         .data(d3LinkForce.links(), function(d) {return d.id;});*/
 
-  /* ICONS */
+/* ICONS */
   iconLock = d3
     .select('#control-icon-group')
     .selectAll('g.lockIcon')
@@ -406,7 +397,7 @@ function updateGraph() {
   iconInfo.exit().remove()
   iconDesc.exit().remove()
 
-  /* NODES AND LINKS */
+/* NODES AND LINKS */
   circles.exit().remove()
   circles = circles
     .enter()
@@ -419,19 +410,18 @@ function updateGraph() {
     .call(drag_handler)
     .on('mouseover', function(d) {
       d3.select(this)
-        .attr('fill', function(d) {
+        .style('fill', function(d) {
           return nodeColorBrighter(d, '#AFEEEE')      
            })
-        .attr('stroke', 'gray')
+        .style('stroke', 'black')
+
       showProperties(d)
+
     })
     .on('mouseout', function(d) {
       d3.select(this)
-        .attr('fill', function(d) {
-            return nodeColor(d, '#1E90FF')
-          })
-
-        .attr('stroke', 'black')
+        .style('fill',null)
+        .style('stroke', null)
     })
     .on('dblclick', function(d) {
       d.fx = d.x
@@ -498,16 +488,10 @@ function propertiesTableSelector(d) {
   var lineselection = null
 
   $('#table_div > tbody > tr').on('mouseover', function() {
-    var selector = null
-    var selection = null
-    var tpaper =
-      $(this)
-        .children('#PMCID')
-        .text() || null
-    var tacc =
-      $(this)
-        .children('#acc')
-        .text() || null
+    var selector = null // property to select PMCID ot Term
+    var selection = null //
+    var tpaper = $(this).children('#PMCID').text() || null
+    var tacc = $(this).children('#acc').text() || null
 
     if (tpaper != null) {
       selector = 'PMCID'
@@ -522,6 +506,9 @@ function propertiesTableSelector(d) {
       .filter(function(d) {
         if (d.properties[selector] == selection) {
           selectedrow = d.id
+          d3.select(this).style('fill', '#fcc200')
+        } 
+        if (d.id == propertiesNode){
           d3.select(this).style('fill', '#fcc200')
         }
       })
@@ -547,7 +534,9 @@ function propertiesTableSelector(d) {
       .filter(function(d) {
         if (d.id == selectedrow) {
           d3.select(this).style('fill', null)
-
+        } 
+        if (d.id == propertiesNode){
+          d3.select(this).style('fill', null)
         }
       })
 
@@ -704,43 +693,43 @@ function nodeMenu(d) {
     })
 
 
-var iconDescEnter = iconDesc
-  .enter()
-  .append('g')
-  .attr('class', 'descIcon')
-  .attr('transform', function(d) {
-    return transformIcon(d, 'desc')
-  })
-  .on('click', function(d) {
-      d3.select('#control-icon-group')
-        .selectAll('g.descIcon path')
-        .style('fill', '#fcc200')
-        .style('stroke', 'white')
+  var iconDescEnter = iconDesc
+    .enter()
+    .append('g')
+    .attr('class', 'descIcon')
+    .attr('transform', function(d) {
+      return transformIcon(d, 'desc')
+    })
+    .on('click', function(d) {
+        d3.select('#control-icon-group')
+          .selectAll('g.descIcon path')
+          .style('fill', '#fcc200')
+          .style('stroke', 'white')
 
 
-    d3.select('#circle-group')
-      .selectAll('circle')
-      .filter(function(d) {
-        if (d.id == selectedNode.id) {
-          if (d3.select(this).attr('clicked') != 'true') {
-            d3.select(this)
-              .style('fill', '#fcc200')
-              .attr('clicked', 'true')
-            currentNode = d
-          } else if (d3.select(this).attr('clicked') == 'true') {
-            d3.select(this)
-              .style('fill', null)
-              .attr('clicked', 'false')
-            currentNode = null
+      d3.select('#circle-group')
+        .selectAll('circle')
+        .filter(function(d) {
+          if (d.id == selectedNode.id) {
+            if (d3.select(this).attr('clicked') != 'true') {
+              d3.select(this)
+                .attr('fill', '#fcc200')
+                .attr('clicked', 'true')
+              currentNode = d
+            } else if (d3.select(this).attr('clicked') == 'true') {
+              d3.select(this)
+                .attr('fill', function(d){return nodeColor(d,'#1E90FF')})
+                .attr('clicked', 'false')
+              currentNode = null
 
-            iconLock.remove()
-            iconCross.remove()
-            iconInfo.remove()
-            iconDesc.remove()
+              iconLock.remove()
+              iconCross.remove()
+              iconInfo.remove()
+              iconDesc.remove()
+            }
           }
-        }
-      })
-  })
+        })
+    })
 
 
 

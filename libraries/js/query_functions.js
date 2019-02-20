@@ -20,18 +20,34 @@ function submitQuery(nodeID) {
       if (queryStr.substr(0,3).toLowerCase() == 'con'){
           queryStr = isItConnected(queryStr)
       }
-      else if(queryStr.substr(0,3).toLowerCase() == 'rel'){
+      else if(queryStr.substr(0,4).toLowerCase() == 'acc:' && (queryStr.includes('AND') == true || queryStr.includes('OR') == true)){
+          nodeItemMap = {}
+          linkItemMap = {}
           queryStr = searchRelationship(queryStr)
       }
-      else if ($('#chkboxCypherQry:checked').val() != 1){
-          queryStr = searchGraph(queryStr)
+      else if (queryStr.substr(0,4).toLowerCase() == 'acc[' && (queryStr.includes('AND') == true || queryStr.includes('OR') == true)){
           nodeItemMap = {}
-          linkItemMap = {}          
+          linkItemMap = {} 
+          queryStr = searchMultipleRelationships(queryStr) 
+      }
+      else if (queryStr.substr(0,4).toLowerCase() == 'acc['){
+          nodeItemMap = {}
+          linkItemMap = {} 
+          queryStr = searchMultipleAccessionNumbers(queryStr)
+      }else if(queryStr.substr(0,1) == '@'){
+          nodeItemMap = {}
+          linkItemMap = {}
+          queryStr = freeTextSearch(queryStr)
+      }
+      else if ($('#chkboxCypherQry:checked').val() != 1){
+          nodeItemMap = {}
+          linkItemMap = {} 
+          queryStr = searchGraph(queryStr)         
       }
       else if ($('#chkboxCypherQry:checked').val() == 1){
-        queryStr = queryStr
-        nodeItemMap = {}
-        linkItemMap = {}
+          queryStr = queryStr
+          nodeItemMap = {}
+          linkItemMap = {}
       }
     }
 
@@ -205,17 +221,88 @@ function searchGraph(query){
 }
 
 function searchRelationship(query){
-   var qdata = query.match(/([\w:\w]+)/gi)
-   qdata.splice(0,1)
-   var acc = "'" + qdata[0].substr(4) + "'"
-   var dbs = qdata.slice(2,qdata.length)
-   var dblist = "['"+dbs.join("','") + "']"
-   query = "WITH " + dblist + " AS dbs " +
+  if (query.includes('AND') == true){
+    var qdata = query.split('AND')
+  }
+  else if (query.includes('OR') == true){
+    var qdata = query.split('OR')
+  }
+  var acc = qdata[0].match(/([\w:\w]+)/gi)
+  var dbs = qdata[1].match(/([\w]+)/gi)
+  acc = "'" + acc[0].substr(4) + "'"
+  dbs.splice(0,1)
+  var dblist = "['"+dbs.join("','") + "']"
+  query = "WITH " + dblist + " AS dbs " +
               "MATCH pp=(:Accession{Term:"+ acc +"})<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(a:Accession) "+
               "WHERE a.Database in dbs " +
               "RETURN pp"
    return query
 }
+
+function searchMultipleRelationships(query){
+  if (query.includes('AND') == true){
+    var qdata = query.split('AND')
+    var joiner = "AND"
+  }
+  else if (query.includes('OR') == true){
+    var qdata = query.split('OR')
+    var joiner = "AND"   //AND here too to protect db
+  }
+
+  acc = qdata[0].match(/([\w]+)/gi)
+  dbs = qdata[1].match(/([\w]+)/gi)
+  acc.splice(0,1)
+  dbs.splice(0,1)
+  var acclist = "['"+acc.join("','") + "']"
+  var dblist = "['"+dbs.join("','") + "']"
+  query = "WITH " + dblist + " AS dbs," + acclist + " AS acc " +
+          "MATCH pp=(a:Accession)<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(b:Accession) "+
+          "WHERE a.Term in acc " + joiner + " b.Database in dbs " +
+          "RETURN pp"
+  return query
+}
+
+function searchMultipleAccessionNumbers(query){
+  var qdata = query.match(/([\w]+)/gi)
+  qdata.splice(0,1)
+  var acclist = "['"+qdata.join("','") + "']"
+  query = "WITH " + acclist + " AS acc " +
+          "MATCH pp=(a:Accession)<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(:Accession) "+
+          "WHERE a.Term in acc " +
+          "RETURN pp"
+  return query
+}
+
+function freeTextSearch(query){
+  if (query.includes('@') == true){
+      var qdata = query.split('@')
+      qdata.splice(0,1)
+
+  }
+  var textPart = qdata[0].trim()
+
+  if (textPart.endsWith('AND') == true || textPart.endsWith('OR') == true){
+    textPart = textPart.replace(/^AND|^OR|AND$|OR$/,'').trim()
+  }
+
+  textPart = "'" + textPart + "'"
+  var paramPart = qdata[1] || null
+  if (paramPart != null){
+      var paramArray = paramPart.match(/(\w+\s+\d+)+/gi)
+      var paramList = paramArray.join(' ') 
+  }else{
+      paramList = 'LIMIT 20000'
+  }
+
+  query = 'CALL db.index.fulltext.queryNodes(\'papers\',' + textPart +') ' +
+          'YIELD node, score ' +
+          'WHERE score > 1 ' +
+          'WITH node, score ' +
+          'MATCH pp=(node)-[:ACCESSION]->(:Accession) ' +
+          'RETURN pp ' + paramList
+  return query
+}
+
 
 function modifyAsNode(neovar, val) {
   var label = ''
