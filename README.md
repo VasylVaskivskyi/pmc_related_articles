@@ -47,7 +47,7 @@ Just put it in NEO4J_home_folder/data/databases.
 
 **Sample IDs to put in query: PMC6299211, 30510815, PMC6218573, 30425980, 30425978**
 
-####How to use search
+#### How to use search
 
 **Target specific search**<br/>
 *Input*<br/>
