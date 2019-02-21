@@ -211,10 +211,10 @@ function searchGraph(query){
 
       if (query.substr(0, 4).toLowerCase() == 'acc:') {
         query =
-          'OPTIONAL MATCH zz=(:Paper)-[:ACCESSION]->' + queryNode + ' RETURN zz'
+          'MATCH pp=(:Paper)-[:ACCESSION]->' + queryNode + ' RETURN pp'
       } else {
-        query = 'OPTIONAL MATCH zz=' + queryNode + '-[:ACCESSION]->(acc:Accession)' +
-          ' OPTIONAL MATCH pp=' + queryNode + '-[:ACCESSION]->(acc:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, zz'
+        query = 'MATCH aa=' + queryNode + '-[:ACCESSION]->(acc:Accession)' +
+          ' OPTIONAL MATCH pp=(acc:Accession)<-[:ACCESSION]-(:Paper) RETURN pp, aa'
       }
  
       return query
@@ -287,19 +287,22 @@ function freeTextSearch(query){
 
   textPart = "'" + textPart + "'"
   var paramPart = qdata[1] || null
+
+
   if (paramPart != null){
       var paramArray = paramPart.match(/(\w+\s+\d+)+/gi)
       var paramList = paramArray.join(' ') 
-  }else{
+  }else if (paramPart == ' ' || paramPart == '' || paramPart == null){
       paramList = 'LIMIT 20000'
   }
 
-  query = 'CALL db.index.fulltext.queryNodes(\'papers\',' + textPart +') ' +
+   query = 'CALL db.index.fulltext.queryNodes(\'papers\',' + textPart +') ' +
           'YIELD node, score ' +
           'WHERE score > 1 ' +
           'WITH node, score ' +
           'MATCH pp=(node)-[:ACCESSION]->(:Accession) ' +
           'RETURN pp ' + paramList
+
   return query
 }
 

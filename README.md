@@ -1,6 +1,9 @@
 # Realted articles search tool for EuropePMC 
-This tool allows you to explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.
+This tool allows you to explore relationships between articles that have common accession numbers (e.g. uniprot, refseq, refsnp), and then export graph in JSON, GML and GXMML or save as SVG.<br/>
 You can try it online on Google Cloud Platfrom http://35.246.2.161:9090/.
+
+**Sample Paper IDs to put in query: PMC6299211, 30510815, PMC6218573, 30425980, 30425978**
+
 
 Webpack is currently disabled.
 
@@ -45,9 +48,9 @@ Because of current limitatins of **admin-import tool** If you want to run script
 Just put it in NEO4J_home_folder/data/databases.
 
 
-**Sample IDs to put in query: PMC6299211, 30510815, PMC6218573, 30425980, 30425978**
 
-#### How to use search
+
+### How to use search
 
 **Target specific search**<br/>
 *Input*<br/>
