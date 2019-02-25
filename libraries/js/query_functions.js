@@ -181,27 +181,20 @@ function isItConnected(query) {
         } else if (currentID != null) {
           fromNode = modifyAsNode('p1', currentID)
           toNode = modifyAsNode('p2', qdata[0])
-
-          query =
-            'MATCH ' +
-            fromNode +
-            ',' +
-            toNode +
-            ', path=shortestpath((p1)-[*..15]-(p2)) RETURN path'
+          query = 'MATCH ' + fromNode + ',' + toNode + ', path=allShortestPaths((p1)-[*..15]-(p2)) RETURN path'
         }
-  } else if (qdata.length == 2){
-    nodeItemMap = {}
-    linkItemMap = {}
-    var val1 = qdata[0].trim()
-    var val2 = qdata[1].trim()
-    fromNode = modifyAsNode('p1', val1)
-    toNode = modifyAsNode('p2', val2)
-    query =
-      'MATCH ' +
-      fromNode +
-      ',' +
-      toNode +
-      ', path=shortestpath((p1)-[*..15]-(p2)) RETURN path'
+        con = [qdata[0]]
+  } 
+  else if (qdata.length == 2){
+        nodeItemMap = {}
+        linkItemMap = {}
+        var val1 = qdata[0].trim()
+        var val2 = qdata[1].trim()
+        fromNode = modifyAsNode('p1', val1)
+        toNode = modifyAsNode('p2', val2)
+        query = 'MATCH ' + fromNode + ',' + toNode + ', path=allShortestPaths((p1)-[*..15]-(p2)) RETURN path'
+        con = [val1,val2]
+        console.log(con)
   }
   return query
 }
@@ -298,7 +291,7 @@ function freeTextSearch(query){
 
    query = 'CALL db.index.fulltext.queryNodes(\'papers\',' + textPart +') ' +
           'YIELD node, score ' +
-          'WHERE score > 1 ' +
+          'WHERE score > 0.95 ' +
           'WITH node, score ' +
           'MATCH pp=(node)-[:ACCESSION]->(:Accession) ' +
           'RETURN pp ' + paramList

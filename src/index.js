@@ -61,6 +61,7 @@ var neo_input_json
 var modified_json
 
 var currentNode = null
+var con = []
 
 var d3Simulation = null
 var circles
@@ -563,12 +564,16 @@ function nodeColor(d, color) {
   var col = ''
   if (currentID == null && d.properties.Term == currentAccessionID) {
     col = color
-  } else if (
-    currentID !== null &&
-    (d.properties.PMCID == currentID || d.properties.PMID == currentID)
-  ) {
+  } 
+  else if (
+    currentID !== null && (d.properties.PMCID == currentID || d.properties.PMID == currentID)) {
     col = color
-  } else {
+  } 
+    else if (con.includes(d.properties.PMCID) == true || con.includes(d.properties.PMID) == true || con.includes(d.properties.Term) == true)
+  {
+    col = color
+  }
+  else {
     col = getItemColor(d)
   }
   return col
@@ -576,14 +581,19 @@ function nodeColor(d, color) {
 
 function nodeColorBrighter(d, color) {
   var col = ''
+  console.log(con.includes(d.properties.PMCID) )
   if (currentID == null && d.properties.Term == currentAccessionID) {
     col = color
-  } else if (
-    currentID !== null &&
-    (d.properties.PMCID == currentID || d.properties.PMID == currentID)
-  ) {
+  } 
+  else if (currentID !== null &&  (d.properties.PMCID == currentID || d.properties.PMID == currentID)) 
+  {
     col = color
-  } else {
+  } 
+      else if (con.includes(d.properties.PMCID) == true || con.includes(d.properties.PMID) == true || con.includes(d.properties.Term) == true)
+  {
+    col = color
+  }
+  else   {
     col = getColorBrighter(getItemColor(d))
   }
   return col
