@@ -231,6 +231,7 @@ function searchRelationship(query){
               "MATCH pp=(:Accession{Term:"+ acc +"})<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(a:Accession) "+
               "WHERE a.Database in dbs " +
               "RETURN pp"
+  multQueryItems = acc
    return query
 }
 
