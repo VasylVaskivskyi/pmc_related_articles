@@ -61,7 +61,7 @@ var neo_input_json
 var modified_json
 
 var currentNode = null
-var con = []
+var multQueryItems = []  //nodes that will be displayed blue 
 
 var d3Simulation = null
 var circles
@@ -72,7 +72,7 @@ var lineText
 var currentID = null
 var currentAccessionID = null
 
-var itemColorMap = {}
+var itemColorMap = {'Accession':'#fc8d62', 'Paper': '#66c2a5'}
 var colorScale = d3.scaleOrdinal(d3.schemeSet2)
 
 var drag_handler = d3
@@ -569,7 +569,7 @@ function nodeColor(d, color) {
     currentID !== null && (d.properties.PMCID == currentID || d.properties.PMID == currentID)) {
     col = color
   } 
-    else if (con.includes(d.properties.PMCID) == true || con.includes(d.properties.PMID) == true || con.includes(d.properties.Term) == true)
+    else if (multQueryItems.includes(d.properties.PMCID) == true || multQueryItems.includes(d.properties.PMID) == true || multQueryItems.includes(d.properties.Term) == true)
   {
     col = color
   }
@@ -581,7 +581,6 @@ function nodeColor(d, color) {
 
 function nodeColorBrighter(d, color) {
   var col = ''
-  console.log(con.includes(d.properties.PMCID) )
   if (currentID == null && d.properties.Term == currentAccessionID) {
     col = color
   } 
@@ -589,7 +588,7 @@ function nodeColorBrighter(d, color) {
   {
     col = color
   } 
-      else if (con.includes(d.properties.PMCID) == true || con.includes(d.properties.PMID) == true || con.includes(d.properties.Term) == true)
+      else if (multQueryItems.includes(d.properties.PMCID) == true || multQueryItems.includes(d.properties.PMID) == true || multQueryItems.includes(d.properties.Term) == true)
   {
     col = color
   }
@@ -794,6 +793,7 @@ $(function() {
 
   $('#btnSend').click(function() {
     submitQuery()
+    currentNode = null
   })
 
 

@@ -142,7 +142,6 @@ function isItConnected(query) {
 
   var qdata = query.match(/([\w:\w]+)/gi)
   qdata.splice(0,1)
-
   if (query == '') {
     promptAlert(
       $('#graphContainer'),
@@ -150,21 +149,25 @@ function isItConnected(query) {
       true
     )
     return
-  }else if (qdata.length > 2){
+  }
+  else if (qdata.length > 2){
     promptAlert(
       $('#graphContainer'),
       'Error: you cannot use more than TWO values!',
       true
     )
     return
-  }else  if ( qdata[0] != null && (qdata[0] == currentID || qdata[0] == currentAccessionID) ) {
+  }
+  else  if ( qdata[0] != null && (qdata[0] == currentID || qdata[0] == currentAccessionID) ) {
     promptAlert(
       $('#graphContainer'),
       'Error: you cannot use same values!',
       true
     )
     return
-  }else  if ( qdata[1] != null && (qdata[0] == qdata[1])) {
+  }
+  else  if (qdata[0] == qdata[1]){
+    console.log(qdata)
     promptAlert(
       $('#graphContainer'),
       'Error: you cannot use same values!',
@@ -183,7 +186,7 @@ function isItConnected(query) {
           toNode = modifyAsNode('p2', qdata[0])
           query = 'MATCH ' + fromNode + ',' + toNode + ', path=allShortestPaths((p1)-[*..15]-(p2)) RETURN path'
         }
-        con = [qdata[0]]
+        multQueryItems = [qdata[0]]
   } 
   else if (qdata.length == 2){
         nodeItemMap = {}
@@ -193,8 +196,7 @@ function isItConnected(query) {
         fromNode = modifyAsNode('p1', val1)
         toNode = modifyAsNode('p2', val2)
         query = 'MATCH ' + fromNode + ',' + toNode + ', path=allShortestPaths((p1)-[*..15]-(p2)) RETURN path'
-        con = [val1,val2]
-        console.log(con)
+        multQueryItems = [val1,val2]
   }
   return query
 }
@@ -252,6 +254,7 @@ function searchMultipleRelationships(query){
           "MATCH pp=(a:Accession)<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(b:Accession) "+
           "WHERE a.Term in acc " + joiner + " b.Database in dbs " +
           "RETURN pp"
+  multQueryItems = acc
   return query
 }
 
@@ -263,6 +266,7 @@ function searchMultipleAccessionNumbers(query){
           "MATCH pp=(a:Accession)<-[:ACCESSION]-(:Paper)-[:ACCESSION]->(:Accession) "+
           "WHERE a.Term in acc " +
           "RETURN pp"
+  multQueryItems = qdata
   return query
 }
 
