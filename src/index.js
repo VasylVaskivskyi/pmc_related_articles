@@ -265,17 +265,21 @@ function showProperties(d) {
 
   var propertiesText = ''
   var link = ''
-  var ex_labs = ['p_ind', 'acs_ind']
+  var ex_labs = ['p_ind', 'acs_ind', 'Term','Database']
   var name = ''
 
   //NODE PROPERTIES
+  if (d.labels[0] == 'Accession'){
+      propertiesText += 'Term: ' + d.properties.Term + '<br/><br/>' + 'Database: ' + d.properties.Database + '<br/><br/>'
+  }
 
-  $.map(d.properties, function(value, key) {
-    if (!ex_labs.includes(key)) {
-      propertiesText += key + ': ' + value + '<br/><br/>'
-    }
+  $.map(d.properties, function(value, key) { 
+      if (!ex_labs.includes(key)) {
+        propertiesText += key + ': ' + value + '<br/><br/>'
+      }
+    
   })
-
+  
   //TABLE
   //Headers are inverted
   $('#table_div').append('<caption>Connected to</caption>')

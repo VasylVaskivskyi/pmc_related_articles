@@ -291,7 +291,7 @@ function freeTextSearch(query){
       var paramArray = paramPart.match(/(\w+\s+\d+)+/gi)
       var paramList = paramArray.join(' ') 
   }else if (paramPart == ' ' || paramPart == '' || paramPart == null){
-      paramList = 'LIMIT 20000'
+      paramList = 'LIMIT 50000'
   }
 
    query = 'CALL db.index.fulltext.queryNodes(\'papers\',' + textPart +') ' +
@@ -299,7 +299,14 @@ function freeTextSearch(query){
           'WHERE score > 0.95 ' +
           'WITH node, score ' +
           'MATCH pp=(node)-[:ACCESSION]->(:Accession) ' +
-          'RETURN pp ' + paramList
+          'RETURN pp ' + paramList +' '
+          'UNION ' +
+          'CALL db.index.fulltext.queryNodes(\'accessions\',' + textPart +') ' +
+          'YIELD node, score ' +
+          'WHERE score > 0.95 ' +
+          'WITH  node, score ' +
+          'MATCH pp=(node)<-[:ACCESSION]-(:Paper) ' +
+          'RETURN pp ' + paramList + ' '
 
   return query
 }

@@ -49,8 +49,8 @@ body {
 	width: auto;
 	background:white;
 	border: 1px solid #CCCCCC;
-	z-index:0;
-
+	overflow-wrap: anywhere;
+	z-index:0;	
 }
 
 .col{
