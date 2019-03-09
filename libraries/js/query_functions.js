@@ -58,10 +58,8 @@ function submitQuery(nodeID) {
 
 
   var jqxhr = $.post(
-    neo4jAPIURL,
-    '{"statements":[{"statement":"' +
-      queryStr +
-      '", "resultDataContents":["graph"]}]}',
+	neo4jAPIURL,
+	'{"statements":[{"statement":"' + queryStr +   '", "resultDataContents":["graph"]}]}',
     function(data) {
       //console.log(JSON.stringify(data));
       if (data.errors != null && data.errors.length > 0) {
@@ -283,7 +281,7 @@ function freeTextSearch(query){
     textPart = textPart.replace(/^AND|^OR|AND$|OR$/,'').trim()
   }
 
-  textPart = "'" + textPart + "'"
+  textPart = "\'" + textPart + "\'"
   var paramPart = qdata[1] || null
 
 
@@ -299,7 +297,7 @@ function freeTextSearch(query){
           'WHERE score > 0.95 ' +
           'WITH node, score ' +
           'MATCH pp=(node)-[:ACCESSION]->(:Accession) ' +
-          'RETURN pp ' + paramList +' '
+          'RETURN pp ' + paramList +' ' +
           'UNION ' +
           'CALL db.index.fulltext.queryNodes(\'accessions\',' + textPart +') ' +
           'YIELD node, score ' +
@@ -307,6 +305,8 @@ function freeTextSearch(query){
           'WITH  node, score ' +
           'MATCH pp=(node)<-[:ACCESSION]-(:Paper) ' +
           'RETURN pp ' + paramList + ' '
+	
+	query = query.replace(/\"/g,'\\"')
 
   return query
 }
